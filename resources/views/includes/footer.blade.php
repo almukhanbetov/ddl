@@ -3,7 +3,7 @@
       <div class="container relative">
 
           <div class="sofa-img">
-              <img src="images/sofa.png" alt="Image" class="img-fluid">
+              <img src="{{ asset('ddl/images/sofa.png') }}" alt="Image" class="img-fluid">
           </div>
 
           <div class="row">
@@ -11,14 +11,14 @@
                   <div class="subscription-form">
                       <h3 class="d-flex align-items-center"><span class="me-1"><img
                                   src="{{ asset('ddl/images/envelope-outline.svg') }}" alt="Image"
-                                  class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
+                                  class="img-fluid"></span><span>Обратная связь</span></h3>
 
                       <form action="#" class="row g-3">
                           <div class="col-auto">
-                              <input type="text" class="form-control" placeholder="Enter your name">
+                              <input type="text" class="form-control" placeholder="Введите имя">
                           </div>
                           <div class="col-auto">
-                              <input type="email" class="form-control" placeholder="Enter your email">
+                              <input type="email" class="form-control" placeholder="Введите ваш E-mail">
                           </div>
                           <div class="col-auto">
                               <button class="btn btn-primary">
@@ -33,16 +33,19 @@
 
           <div class="row g-5 mb-5">
               <div class="col-lg-4">
-                  <div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a>
+                  <div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">DDL_DECOR<span>.</span></a>
                   </div>
-                  <p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus
-                      malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.
-                      Pellentesque habitant</p>
+                  <p class="mb-4">
+                      Мы специализируемся на аренде мебели и оформлении мероприятий любого масштаба: от камерных ужинов
+                      до масштабных торжеств.
+                      Наша цель — подчеркнуть стиль вашего события и сделать его запоминающимся.
+                  </p>
 
                   <ul class="list-unstyled custom-social">
                       <li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
                       <li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
-                      <li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
+                      <li><a href="https://www.instagram.com/ddl_decor?igsh=MW5jYTAybmtydm54MA%3D%3D&utm_source=qr"><span
+                                  class="fa fa-brands fa-instagram"></span></a></li>
                       <li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
                   </ul>
               </div>
@@ -51,27 +54,27 @@
                   <div class="row links-wrap">
                       <div class="col-6 col-sm-6 col-md-3">
                           <ul class="list-unstyled">
-                              <li><a href="#">About us</a></li>
-                              <li><a href="#">Services</a></li>
-                              <li><a href="#">Blog</a></li>
-                              <li><a href="#">Contact us</a></li>
+                              <li><a href="{{ route('pages.index') }}">Главная</a></li>
+                              <li><a href="{{ route('pages.shop') }}">Каталог</a></li>
+                              <li><a href="{{ route('pages.about') }}">О нас</a></li>
+                              <li><a href="{{ route('pages.contacts') }}">Контакты</a></li>
                           </ul>
                       </div>
 
                       <div class="col-6 col-sm-6 col-md-3">
                           <ul class="list-unstyled">
-                              <li><a href="#">Support</a></li>
-                              <li><a href="#">Knowledge base</a></li>
-                              <li><a href="#">Live chat</a></li>
+                              <li><a href="#">Поддержка</a></li>
+                              <li><a href="#">База знаний</a></li>
+                              <li><a href="#">Чат</a></li>
                           </ul>
                       </div>
 
                       <div class="col-6 col-sm-6 col-md-3">
                           <ul class="list-unstyled">
-                              <li><a href="#">Jobs</a></li>
-                              <li><a href="#">Our team</a></li>
-                              <li><a href="#">Leadership</a></li>
-                              <li><a href="#">Privacy Policy</a></li>
+                              <li><a href="#">Стул Напалеон</a></li>
+                              <li><a href="#">Круглый стол</a></li>
+                              <li><a href="#">Квадратный стол</a></li>
+                              <li><a href="#">Кресло мешок</a></li>
                           </ul>
                       </div>
 
@@ -94,14 +97,14 @@
                           <script>
                               document.write(new Date().getFullYear());
                           </script>. All Rights Reserved. &mdash; Designed with love by <a
-                              hreff="https://compnet.kz">ThemeWagon</a>                     
+                              hreff="https://compnet.kz">ThemeWagon</a>
                       </p>
                   </div>
 
                   <div class="col-lg-6 text-center text-lg-end">
                       <ul class="list-unstyled d-inline-flex ms-auto">
-                          <li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
-                          <li><a href="#">Privacy Policy</a></li>
+                          <li class="me-4"><a href="#">&amp;</a></li>
+                          <li><a href="#"></a></li>
                       </ul>
                   </div>
 

@@ -2,7 +2,7 @@
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
     <div class="container">
-        <a class="navbar-brand" href="#">DDL_DECOR<span>.</span></a>
+        <a class="navbar-brand" href="#"><img  src="{{ asset('ddl/images/logo.png') }}" class="img-fluid"></a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
             aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">

@@ -10,8 +10,10 @@
                         Стильные решения для свадеб, торжеств и событий под ключ.
                         Красиво. Аккуратно. В срок.
                     </p>
-                    <p><a href="" class="btn btn-secondary me-2">Shop Now</a><a href="#"
-                            class="btn btn-white-outline">Explore</a></p>
+                    <p>
+                        <a href="{{ route('pages.shop') }}" class="btn btn-secondary me-2">Каталог</a>
+                        {{-- <a href="#" class="btn btn-white-outline">Explore</a> --}}
+                    </p>
                 </div>
             </div>
             <div class="col-lg-7">

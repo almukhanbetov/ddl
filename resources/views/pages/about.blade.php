@@ -1,11 +1,10 @@
 @extends('layouts.guest')
 @section('content')
-    <!-- Start Why Choose Us Section -->
     <div class="why-choose-section">
         <div class="container">
             <div class="row justify-content-between align-items-center">
                 <div class="col-lg-6">
-                     <h2 class="section-title">Почему выбираете нас</h2>
+                    <h2 class="section-title">Почему выбираете нас</h2>
                     <p>DDL_DECOR — это декор, который создаёт атмосферу.
                         Мы специализируемся на аренде мебели и оформлении мероприятий любого масштаба: от камерных ужинов до
                         масштабных торжеств.
@@ -37,8 +36,8 @@
                                     <img src="{{ asset('ddl/images/support.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
                                 <h3>Принимаем заказы круглосуточно — 24/7.</h3>
-                                    <p>Работаем без выходных: ваши заказы принимаем в удобное для Вас время и выполняем вовремя
-                                    </p>
+                                <p>Работаем без выходных: ваши заказы принимаем в удобное для Вас время и выполняем вовремя
+                                </p>
                             </div>
                         </div>
 
@@ -64,5 +63,4 @@
             </div>
         </div>
     </div>
-    
 @endsection

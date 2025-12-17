@@ -97,7 +97,7 @@
                           <script>
                               document.write(new Date().getFullYear());
                           </script>. All Rights Reserved. &mdash; Designed with love by <a
-                              hreff="https://compnet.kz">ThemeWagon</a>
+                              hreff="https://compnet.kz">Complex Services</a>
                       </p>
                   </div>
 

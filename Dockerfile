@@ -2,28 +2,24 @@ FROM php:8.3-fpm
 
 # Системные зависимости
 RUN apt update && apt install -y \
-    libpq-dev \
-    zip unzip git curl \
+    nano \
+    libpq-dev zip unzip git curl nodejs npm \
     && docker-php-ext-install pdo_pgsql
 
 WORKDIR /var/www
 
-# Копируем только composer-файлы
+# Composer
 COPY composer.json composer.lock ./
-
-# Устанавливаем composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev --optimize-autoloader
 
-# Устанавливаем зависимости (БЕЗ dev)
-RUN composer install \
-    --no-dev \
-    --optimize-autoloader \
-    --no-interaction \
-    --no-scripts
-# Копируем остальной код
+# Frontend
+COPY package.json package-lock.json ./
+RUN npm install && npm run build
+
+# Код
 COPY . .
 
 # Права
 RUN chown -R www-data:www-data /var/www
-
 USER www-data

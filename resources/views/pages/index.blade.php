@@ -157,7 +157,7 @@
                 <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
                     <div class="post-entry">
                         <div class="video-otzv mb-4">
-                            <video autoplay muted loop playsinline>
+                            <video controls playsinline>
                                 <source src="{{ asset('ddl/videos/otzv1.mp4') }}" type="video/mp4">
                             </video>
                         </div>
@@ -173,7 +173,7 @@
                 <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
                     <div class="post-entry">
                         <div class="video-otzv mb-4">
-                            <video autoplay muted loop playsinline>
+                            <video controls playsinline>
                                 <source src="{{ asset('ddl/videos/otzv2.mp4') }}" type="video/mp4">
                             </video>
                         </div>
@@ -189,7 +189,7 @@
                 <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
                     <div class="post-entry">
                         <div class="video-otzv mb-4">
-                            <video autoplay muted loop playsinline>
+                            <video controls playsinline>
                                 <source src="{{ asset('ddl/videos/otzv3.mp4') }}" type="video/mp4">
                             </video>
                         </div>

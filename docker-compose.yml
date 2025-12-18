@@ -2,10 +2,9 @@ services:
   app:
     image: almuko/ddl-app:latest
     container_name: ddl_app
-    env_file:
-      - .env
+    working_dir: /var/www
     volumes:
-      - ddl_storage:/var/www/storage
+      - .:/var/www
     depends_on:
       - db
 
@@ -13,8 +12,9 @@ services:
     image: nginx:alpine
     container_name: ddl_web
     ports:
-      - "8081:80"
+      - "80:80"
     volumes:
+      - .:/var/www              # 🔥 ВОТ ЭТОГО НЕ ХВАТАЛО
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - app
@@ -30,5 +30,5 @@ services:
       - ddl_pgdata:/var/lib/postgresql/data
 
 volumes:
-  ddl_storage:
   ddl_pgdata:
+

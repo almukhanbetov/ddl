@@ -1,6 +1,5 @@
 FROM php:8.3-fpm
 
-# Системные зависимости
 RUN apt update && apt install -y \
     nano \
     libpq-dev zip unzip git curl nodejs npm \
@@ -11,7 +10,9 @@ WORKDIR /var/www
 # Composer
 COPY composer.json composer.lock ./
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev --optimize-autoloader
+
+# ❗ отключаем scripts
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Frontend
 COPY package.json package-lock.json ./
@@ -20,6 +21,8 @@ RUN npm install && npm run build
 # Код
 COPY . .
 
-# Права
+# Теперь scripts можно запускать
+RUN php artisan package:discover --ansi || true
+
 RUN chown -R www-data:www-data /var/www
 USER www-data

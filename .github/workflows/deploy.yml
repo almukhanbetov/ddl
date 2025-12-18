@@ -28,12 +28,12 @@ jobs:
       - name: Build & Push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: . # корень репозитория
-          file: Dockerfile # 👈 ЯВНО указываем Dockerfile
-          push: true # разрешаем push в Docker Hub
+          context: .
+          file: Dockerfile
+          push: true
           tags: |
-            almuko/ddl-app:latest        # основной тег
-            almuko/ddl-app:${{ github.sha }} # тег коммита
+            almuko/ddl-app:latest    
+            almuko/ddl-app:${{ github.sha }}
 
       # 4️⃣ Деплой на VPS по SSH
       - name: Deploy on VPS

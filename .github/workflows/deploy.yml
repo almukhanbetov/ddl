@@ -1,17 +1,14 @@
 # Имя workflow (видно в GitHub → Actions)
 name: CI/CD Deploy to VPS
-
 # Когда запускать workflow
 on:
   push:
     branches:
       - main # запускается при push в ветку main
-
 jobs:
   deploy:
     # Среда выполнения (виртуальная машина GitHub)
     runs-on: ubuntu-latest
-
     steps:
       # 1️⃣ Забираем код репозитория
       - name: Checkout code

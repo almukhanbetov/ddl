@@ -3,6 +3,8 @@ services:
     image: almuko/ddl-app:latest
     container_name: ddl_app
     working_dir: /var/www
+    env_file:
+      - .env
     volumes:
       - ddl_storage:/var/www/storage
     depends_on:

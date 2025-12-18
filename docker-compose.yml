@@ -1,6 +1,6 @@
 services:
   app:
-    build: .
+    image: almuko/ddl-app:latest
     container_name: ddl_app
     working_dir: /var/www
     volumes:

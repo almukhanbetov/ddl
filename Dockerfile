@@ -15,8 +15,11 @@ COPY composer.json composer.lock ./
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Устанавливаем зависимости (БЕЗ dev)
-RUN composer install --no-dev --optimize-autoloader --no-interaction
-
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction \
+    --no-scripts
 # Копируем остальной код
 COPY . .
 

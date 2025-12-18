@@ -24,6 +24,7 @@
     <script src="{{ asset('ddl/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('ddl/js/tiny-slider.js') }}"></script>
     <script src="{{ asset('ddl/js/custom.js') }}"></script>
+    <script src="{{ asset('ddl/js/video.js') }}"></script>
 </body>
 
 </html>

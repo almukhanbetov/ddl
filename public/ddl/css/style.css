@@ -731,3 +731,37 @@ textarea {
     object-fit: cover;
     display: block;
 }
+
+.video-box {
+    position: relative;
+    overflow: hidden;
+}
+
+.video-box video {
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: pointer;
+}
+
+.sound-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.sound-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+}

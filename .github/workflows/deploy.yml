@@ -28,6 +28,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
+          no-cache: true
           tags: |
             almuko/ddl-app:latest    
             almuko/ddl-app:${{ github.sha }}
@@ -37,7 +38,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }} # IP сервера
-          username: ${{ secrets.VPS_USER }} # almuko          
+          username: ${{ secrets.VPS_USER }} # almuko
           port: ${{ secrets.VPS_PORT }} # 22122
           key: ${{ secrets.VPS_SSH_KEY }} # SSH private key
           script: |

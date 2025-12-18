@@ -1,41 +1,50 @@
+# Имя workflow (видно в GitHub → Actions)
 name: CI/CD Deploy to VPS
 
+# Когда запускать workflow
 on:
   push:
-    branches: [main]
+    branches:
+      - main # запускается при push в ветку main
 
 jobs:
   deploy:
+    # Среда выполнения (виртуальная машина GitHub)
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Забираем код репозитория
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Логинимся в Docker Hub
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }} # almuko
+          password: ${{ secrets.DOCKERHUB_TOKEN }} # access token
 
+      # 3️⃣ Сборка Docker image + push в Docker Hub
       - name: Build & Push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          push: true
+          context: . # корень репозитория
+          file: Dockerfile # 👈 ЯВНО указываем Dockerfile
+          push: true # разрешаем push в Docker Hub
           tags: |
-            almuko/ddl-app:latest
-            almuko/ddl-app:${{ github.sha }}
+            almuko/ddl-app:latest        # основной тег
+            almuko/ddl-app:${{ github.sha }} # тег коммита
 
+      # 4️⃣ Деплой на VPS по SSH
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          port: ${{ secrets.VPS_PORT }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          host: ${{ secrets.VPS_HOST }} # IP сервера
+          username: ${{ secrets.VPS_USER }} # almuko
+          port: ${{ secrets.VPS_PORT }} # 22122
+          key: ${{ secrets.VPS_SSH_KEY }} # SSH private key
           script: |
-            cd ${{ secrets.VPS_PATH }}
-            docker compose pull
-            docker compose up -d
-            docker image prune -f
+            cd ${{ secrets.VPS_PATH }}       # /home/almuko/ddl
+            docker compose pull              # тянем новый image
+            docker compose up -d             # перезапускаем контейнеры
+            docker image prune -f             # чистим старые образы

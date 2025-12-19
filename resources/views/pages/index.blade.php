@@ -15,8 +15,8 @@
                 <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
                     <a class="product-item" href="cart.html">
                         <img src="{{ asset('ddl/images/product-1.png') }}" class="img-fluid product-thumbnail">
-                        <h3 class="product-title">Nordic Chair</h3>
-                        <strong class="product-price">$50.00</strong>
+                        <h3 class="product-title">Кресло мешок</h3>
+                        <strong class="product-price">2000 т</strong>
 
                         <span class="icon-cross">
                             <img src="{{ asset('ddl/images/cross.svg') }}" class="img-fluid">
@@ -26,8 +26,8 @@
                 <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
                     <a class="product-item" href="cart.html">
                         <img src="{{ asset('ddl/images/product-2.png') }}" class="img-fluid product-thumbnail">
-                        <h3 class="product-title">Kruzo Aero Chair</h3>
-                        <strong class="product-price">$78.00</strong>
+                        <h3 class="product-title">Кресло</h3>
+                        <strong class="product-price">3000 т</strong>
 
                         <span class="icon-cross">
                             <img src="{{ asset('ddl/images/cross.svg') }}" class="img-fluid">
@@ -37,8 +37,8 @@
                 <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
                     <a class="product-item" href="cart.html">
                         <img src="{{ asset('ddl/images/product-3.png') }}" class="img-fluid product-thumbnail">
-                        <h3 class="product-title">Ergonomic Chair</h3>
-                        <strong class="product-price">$43.00</strong>
+                        <h3 class="product-title">Стул Напалеон</h3>
+                        <strong class="product-price">2800 т</strong>
 
                         <span class="icon-cross">
                             <img src="{{ asset('ddl/images/cross.svg') }}" class="img-fluid">
@@ -105,12 +105,21 @@
 
                 <div class="col-lg-5">
                     <div class="img-wrap video-box">
+<<<<<<< HEAD
                         <video autoplay muted loop playsinline id="instaVideo1">
                         <source src="{{ asset('ddl/videos/1.mp4') }}" type="video/mp4">
                         </video>
                         <button class="sound-btn"
                         onclick="toggleSound(event, 'instaVideo1')">
                         🔇
+=======
+                        <video autoplay muted loop playsinline id="instaVideo">
+                            <source src="{{ asset('ddl/videos/1.mp4') }}" type="video/mp4">
+                        </video>
+
+                        <button class="sound-btn" onclick="toggleSound(event)">
+                            🔇
+>>>>>>> b602d5ca5285e4ab7fcd08b60b71174fbc44359a
                         </button>
                     </div>
                 </div>
@@ -209,5 +218,5 @@
 
             </div>
         </div>
-    </div> 
+    </div>
 @endsection

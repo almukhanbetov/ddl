@@ -8,9 +8,10 @@
     <link rel="shortcut icon" href="favicon.png">
     <meta name="description" content="" />
     <meta name="keywords" content="bootstrap, bootstrap4" />
-    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ asset('ddl/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('ddl/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('ddl/css/tiny-slider.css') }}">
     <title>Главная</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body>
@@ -19,6 +20,10 @@
     @yield('content')
     @include('includes.footer')
 
+
+
+    <script src="{{ asset('ddl/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('ddl/js/custom.js') }}"></script>
 </body>
 
 </html>

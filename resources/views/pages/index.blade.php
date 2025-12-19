@@ -105,21 +105,13 @@
 
                 <div class="col-lg-5">
                     <div class="img-wrap video-box">
-<<<<<<< HEAD
+
                         <video autoplay muted loop playsinline id="instaVideo1">
                         <source src="{{ asset('ddl/videos/1.mp4') }}" type="video/mp4">
                         </video>
                         <button class="sound-btn"
                         onclick="toggleSound(event, 'instaVideo1')">
                         🔇
-=======
-                        <video autoplay muted loop playsinline id="instaVideo">
-                            <source src="{{ asset('ddl/videos/1.mp4') }}" type="video/mp4">
-                        </video>
-
-                        <button class="sound-btn" onclick="toggleSound(event)">
-                            🔇
->>>>>>> b602d5ca5285e4ab7fcd08b60b71174fbc44359a
                         </button>
                     </div>
                 </div>

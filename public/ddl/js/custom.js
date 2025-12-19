@@ -1,73 +1,60 @@
-(function() {
-	'use strict';
+(function () {
+  'use strict';
 
-	var tinyslider = function() {
-		var el = document.querySelectorAll('.testimonial-slider');
+  /* =========================
+     TINY SLIDER
+  ========================= */
+  if (document.querySelectorAll('.testimonial-slider').length) {
+    tns({
+      container: '.testimonial-slider',
+      items: 1,
+      axis: "horizontal",
+      controlsContainer: "#testimonial-nav",
+      swipeAngle: false,
+      speed: 700,
+      nav: true,
+      controls: true,
+      autoplay: true,
+      autoplayHoverPause: true,
+      autoplayTimeout: 3500,
+      autoplayButtonOutput: false
+    });
+  }
 
-		if (el.length > 0) {
-			var slider = tns({
-				container: '.testimonial-slider',
-				items: 1,
-				axis: "horizontal",
-				controlsContainer: "#testimonial-nav",
-				swipeAngle: false,
-				speed: 700,
-				nav: true,
-				controls: true,
-				autoplay: true,
-				autoplayHoverPause: true,
-				autoplayTimeout: 3500,
-				autoplayButtonOutput: false
-			});
-		}
-	};
-	tinyslider();
+  /* =========================
+     PLUS / MINUS
+  ========================= */
+  var quantityContainers = document.getElementsByClassName('quantity-container');
 
-	
+  for (var i = 0; i < quantityContainers.length; i++) {
+    (function (container) {
+      var input = container.getElementsByClassName('quantity-amount')[0];
+      var inc = container.getElementsByClassName('increase')[0];
+      var dec = container.getElementsByClassName('decrease')[0];
 
+      inc.addEventListener('click', function () {
+        var val = parseInt(input.value, 10) || 0;
+        input.value = val + 1;
+      });
 
-	var sitePlusMinus = function() {
+      dec.addEventListener('click', function () {
+        var val = parseInt(input.value, 10) || 0;
+        input.value = val > 0 ? val - 1 : 0;
+      });
+    })(quantityContainers[i]);
+  }
 
-		var value,
-    		quantity = document.getElementsByClassName('quantity-container');
+  /* =========================
+     VIDEO SOUND TOGGLE
+  ========================= */
+  window.toggleSound = function (e, videoId) {
+    e.stopPropagation();
 
-		function createBindings(quantityContainer) {
-	      var quantityAmount = quantityContainer.getElementsByClassName('quantity-amount')[0];
-	      var increase = quantityContainer.getElementsByClassName('increase')[0];
-	      var decrease = quantityContainer.getElementsByClassName('decrease')[0];
-	      increase.addEventListener('click', function (e) { increaseValue(e, quantityAmount); });
-	      decrease.addEventListener('click', function (e) { decreaseValue(e, quantityAmount); });
-	    }
+    var video = document.getElementById(videoId);
+    if (!video) return;
 
-	    function init() {
-	        for (var i = 0; i < quantity.length; i++ ) {
-						createBindings(quantity[i]);
-	        }
-	    };
+    video.muted = !video.muted;
+    e.currentTarget.textContent = video.muted ? '🔇' : '🔊';
+  };
 
-	    function increaseValue(event, quantityAmount) {
-	        value = parseInt(quantityAmount.value, 10);
-
-	        console.log(quantityAmount, quantityAmount.value);
-
-	        value = isNaN(value) ? 0 : value;
-	        value++;
-	        quantityAmount.value = value;
-	    }
-
-	    function decreaseValue(event, quantityAmount) {
-	        value = parseInt(quantityAmount.value, 10);
-
-	        value = isNaN(value) ? 0 : value;
-	        if (value > 0) value--;
-
-	        quantityAmount.value = value;
-	    }
-	    
-	    init();
-		
-	};
-	sitePlusMinus();
-
-
-})()
+})();

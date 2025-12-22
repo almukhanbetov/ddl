@@ -21,7 +21,7 @@
                               <input type="email" class="form-control" placeholder="Введите ваш E-mail">
                           </div>
                           <div class="col-auto">
-                              <button class="btn btn-primary">
+                              <button class="btn btn-primary text-white">
                                   <span class="fa fa-paper-plane"></span>
                               </button>
                           </div>

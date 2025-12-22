@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="{{ asset('ddl/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('ddl/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('ddl/css/tiny-slider.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
     <meta name="google-site-verification" content="42aDaCa06FEBMRIte60YTJj9U6GZ4xtRCE_W3XVt5GQ" />
     <title>Главная</title>
 </head>

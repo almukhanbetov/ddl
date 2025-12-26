@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root{
+    --stake-bg: #0B1320;
+    --stake-card: #101B33;
+    --stake-green:#16FF00;
+}

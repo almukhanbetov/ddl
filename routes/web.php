@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -8,10 +7,13 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VisitController;
+
 Route::get('/version', function () {
-    return [
+    return response()->json([
+        'app' => config('app.name'),
         'build' => env('APP_BUILD'),
-    ];
+        'time' => now(),
+    ]);
 });
 Route::get("/", [PageController::class, 'index'])->name('pages.index');
 Route::get("/pages/shop", [PageController::class, 'shop'])->name('pages.shop');

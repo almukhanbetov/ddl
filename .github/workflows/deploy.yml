@@ -25,7 +25,8 @@ jobs:
           tags: |
             almuko/ddl-app:latest
             almuko/ddl-app:${{ github.sha }}
-
+          build-args: |
+            APP_BUILD=${{ github.sha }}
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -38,6 +39,7 @@ jobs:
           script: |
             set -e
             cd ${{ secrets.VPS_PATH }}
+            echo "APP_BUILD=${{ github.sha }}" >> .env
             docker compose pull
             docker compose up -d --force-recreate
             # 🧹 очистка старых образов (безопасно)

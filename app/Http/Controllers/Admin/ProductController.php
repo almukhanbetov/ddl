@@ -72,17 +72,36 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $data = $request->validate([
-            'name' => 'required',
-            'price' => 'required|integer',
-            'quantity' => 'required|integer',
-            'description' => 'nullable',
-            'image' => 'nullable',
+            'name'        => 'required|string|max:255',
+            'price'       => 'required|integer|min:0',
+            'quantity'    => 'required|integer|min:0',
+            'description' => 'nullable|string',
+            'status'      => 'required|in:available,unavailable,archived',
+            'image'       => 'nullable|image|max:4096', // это теперь файл
         ]);
+
+        // если выбрали НОВОЕ фото
+        if ($request->hasFile('image')) {
+
+            // при желании можно удалить старый файл
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            // сохраняем новое и кладём путь в $data
+            $data['image'] = $request->file('image')
+                ->store('products', 'public');
+        } else {
+            // файл не выбирали — оставляем старое значение в БД
+            unset($data['image']);
+        }
 
         $product->update($data);
 
-        return redirect()->route('admin.products.index')
+        return redirect()
+            ->route('admin.products.edit', $product)
             ->with('success', 'Изменения сохранены');
+
     }
 
 

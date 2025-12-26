@@ -30,5 +30,19 @@
     </p>
 
 </div>
+@if($product->gallery && count($product->gallery))
+    <h3 class="text-lg mt-6 mb-2 text-gray-300">Галерея</h3>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+        @foreach($product->gallery as $img)
+            <img
+                src="{{ asset('storage/' . $img) }}"
+                class="rounded-lg border border-slate-700 object-cover"
+            >
+        @endforeach
+
+    </div>
+@endif
 
 @endsection

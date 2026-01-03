@@ -28,7 +28,8 @@
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
                 <li><a class="nav-link" href="{{ route('register') }}"><img
                             src="{{ asset('ddl/images/user.svg') }}"></a></li>
-                <li><a class="nav-link" href="cart.html"><img src="{{ asset('ddl/images/cart.svg') }}"></a></li>
+                <li><a class="nav-link" href="{{ route('cart.index') }}"><img
+                            src="{{ asset('ddl/images/cart.svg') }}"></a></li>
             </ul>
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
                 {{-- Если гость --}}
@@ -49,7 +50,8 @@
                 {{-- Если авторизован --}}
                 @auth
                     <li class="nav-item d-flex align-items-center text-white me-2">
-                        <a href="{{ route('admin.dashboard') }}" class="text-white no-underline">{{ auth()->user()->name }}</a>
+                        <a href="{{ route('admin.dashboard') }}"
+                            class="text-white no-underline">{{ auth()->user()->name }}</a>
                     </li>
 
                     <li class="nav-item">

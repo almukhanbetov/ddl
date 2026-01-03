@@ -13,7 +13,7 @@
                     <p><a href="shop.html" class="btn">Explore</a></p>
                 </div>
                 <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                    <a class="product-item" href="cart.html">
+                    <a class="product-item" href="{{route("cart.index")}}">
                         <img src="{{ asset('ddl/images/product-1.png') }}" class="img-fluid product-thumbnail">
                         <h3 class="product-title">Кресло мешок</h3>
                         <strong class="product-price">2000 т</strong>

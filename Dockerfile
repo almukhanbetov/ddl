@@ -2,6 +2,7 @@ FROM php:8.3-fpm
 
 RUN apt update && apt install -y \
     nano \
+    bash \
     libpq-dev \
     zip unzip git curl \
     && docker-php-ext-install pdo_pgsql pdo_mysql

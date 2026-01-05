@@ -17,7 +17,7 @@ class PageController extends Controller
           if ($request->has('available')) {
                $query->where('status', 'available');
           }
-          $products = $query->latest()->paginate(12);
+          $products = $query->latest()->paginate(30);
           return view("pages.shop", compact('products'));
     }
     public function about(){

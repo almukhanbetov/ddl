@@ -20,7 +20,7 @@ class ProductController extends Controller
             $query->where('status', 'available');
         }
 
-        $products = $query->orderByDesc('id')->paginate(12);
+        $products = $query->orderByDesc('id')->paginate(30);
 
         return view('admin.products.index', compact('products'));
     }

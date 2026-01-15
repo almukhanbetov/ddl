@@ -10,10 +10,10 @@
                         Фотозоны и арки — создаём незабываемые кадры.
                         Декор и цветочные стойки — детали, которые делают праздник особенным.
                         Все, что нужно для вашего события, в одном месте!</p>
-                    <p><a href="shop.html" class="btn">Explore</a></p>
+                    <p><a href="shop.html" class="btn">Обзор</a></p>
                 </div>
                 <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                    <a class="product-item" href="{{route("cart.index")}}">
+                    <a class="product-item" href="{{ route('cart.index') }}">
                         <img src="{{ asset('ddl/images/product-1.png') }}" class="img-fluid product-thumbnail">
                         <h3 class="product-title">Кресло мешок</h3>
                         <strong class="product-price">2000 т</strong>
@@ -107,11 +107,10 @@
                     <div class="img-wrap video-box">
 
                         <video autoplay muted loop playsinline id="instaVideo1">
-                        <source src="{{ asset('ddl/videos/1.mp4') }}" type="video/mp4">
+                            <source src="{{ asset('ddl/videos/1.mp4') }}" type="video/mp4">
                         </video>
-                        <button class="sound-btn"
-                        onclick="toggleSound(event, 'instaVideo1')">
-                        🔇
+                        <button class="sound-btn" onclick="toggleSound(event, 'instaVideo1')">
+                            🔇
                         </button>
                     </div>
                 </div>

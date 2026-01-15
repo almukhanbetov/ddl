@@ -38,8 +38,8 @@ RUN php artisan storage:link || true \
     && php artisan optimize || true
 
 # Frontend build from node
-#COPY --from=node-builder /app/public/build ./public/build
-COPY --from=node-builder /app/dist ./public/build
+COPY --from=node-builder /app/public/build ./public/build
+# COPY --from=node-builder /app/dist ./public/build
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 storage bootstrap/cache
 

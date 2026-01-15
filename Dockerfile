@@ -1,49 +1,30 @@
-# -------------------------------
-# 1️⃣ Frontend build
-# -------------------------------
-FROM node:22-alpine AS node-builder
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY resources ./resources
-COPY vite.config.js tailwind.config.js postcss.config.js ./
-RUN npm run build
-
-# -------------------------------
-# 2️⃣ Laravel PHP
-# -------------------------------
 FROM php:8.3-fpm
 
 RUN apt update && apt install -y \
-    git unzip zip curl libpng-dev libzip-dev libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql zip
-
-# Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+    nano \
+    bash \
+    libpq-dev \
+    zip unzip git curl \
+    && docker-php-ext-install pdo_pgsql pdo_mysql
 
 WORKDIR /var/www
 
-# 🔑 Сначала копируем ВЕСЬ Laravel проект
-COPY . .
+COPY composer.json composer.lock ./
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# 🔑 Теперь можно запускать composer
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
-    --no-interaction
+    --no-scripts
 
-# Laravel оптимизация
-RUN php artisan storage:link || true \
-    && php artisan optimize || true
+# 🔥 СНАЧАЛА копируем public (включая build)
+COPY public ./public
 
-# Frontend build from node
-COPY --from=node-builder /app/public/build ./public/build
+# Потом всё остальное
+COPY . .
 
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 775 storage bootstrap/cache
+RUN php artisan package:discover --ansi || true
+RUN php artisan storage:link || true
 
+RUN chown -R www-data:www-data /var/www
 USER www-data
-
-EXPOSE 9000
-CMD ["php-fpm"]
-

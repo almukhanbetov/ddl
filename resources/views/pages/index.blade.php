@@ -140,7 +140,7 @@
                         <li>Ткань на каркасе – уют и элегантность в каждом фото.✨</li>
                         <li>Шары – ярко, весело и фотогенично.🎈</li>
                     </ul>
-                    <p><a herf="#" class="btn">Explore</a></p>
+                    <p><a herf="#" class="btn">Обзор</a></p>
                 </div>
             </div>
         </div>
@@ -166,7 +166,7 @@
                             </video>
                         </div>
                         <div class="post-content-entry">
-                            <h3><a href="#">Арман Смагулов</a></h3>
+                            {{-- <h3><a href="#">Арман Смагулов</a></h3> --}}
                             <div class="meta">
                                 <span><a href="#"></a></span> <span>в <a href="#">
                                         20.03.2025</a></span>
@@ -182,7 +182,7 @@
                             </video>
                         </div>
                         <div class="post-content-entry">
-                            <h3><a href="#">Роза Стамкулова</a></h3>
+                            {{-- <h3><a href="#">Роза Стамкулова</a></h3> --}}
                             <div class="meta">
                                 <span> <a href="#"></a></span> <span>в <a href="#">15.07
                                         2025</a></span>
@@ -198,7 +198,7 @@
                             </video>
                         </div>
                         <div class="post-content-entry">
-                            <h3><a href="#">Арай Аханова</a></h3>
+                            {{-- <h3><a href="#">Арай Аханова</a></h3> --}}
                             <div class="meta">
                                 <span> <a href="#"></a></span> <span>в <a href="#">3.08
                                         2025</a></span>

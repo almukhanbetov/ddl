@@ -30,6 +30,7 @@ COPY . .
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
+    --no-scripts \
     --no-interaction
 
 # Laravel оптимизация

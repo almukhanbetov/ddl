@@ -1,6 +1,3 @@
-# -------------------------------
-# 1️⃣ Frontend build
-# -------------------------------
 # =========================
 # 1️⃣ Frontend build (Vite)
 # =========================
@@ -15,6 +12,8 @@ RUN npm ci
 COPY resources ./resources
 COPY vite.config.js tailwind.config.js postcss.config.js ./
 RUN npm run build
+
+
 # =========================
 # 2️⃣ PHP / Laravel runtime
 # =========================
@@ -61,4 +60,3 @@ USER www-data
 
 EXPOSE 9000
 CMD ["php-fpm"]
-

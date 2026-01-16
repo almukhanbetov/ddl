@@ -58,8 +58,18 @@ jobs:
           script: |
             set -e
             cd ${{ secrets.VPS_PATH }}
-            echo "APP_BUILD=${{ github.sha }}" >> .env
+
+            # безопасно обновляем APP_BUILD
+            if grep -q "^APP_BUILD=" .env; then
+              sed -i "s/^APP_BUILD=.*/APP_BUILD=${{ github.sha }}/" .env
+            else
+              echo "APP_BUILD=${{ github.sha }}" >> .env
+            fi
+
             docker compose pull
-            docker compose up -d --force-recreate
-            # 🧹 очистка старых образов (безопасно)
+
+            # ZERO-DOWNTIME: сначала новый app
+            docker compose up -d --no-deps app
+
+            # nginx НЕ трогаем → сайт не падает
             docker image prune -f

@@ -57,7 +57,7 @@
                               <li><a href="{{ route('pages.index') }}">Главная</a></li>
                               <li><a href="{{ route('pages.shop') }}">Каталог</a></li>
                               <li><a href="{{ route('pages.about') }}">О нас</a></li>
-                              <li><a href="{{ route('pages.contacts') }}">Контакты</a></li>
+                              <li><a href="{{ route('pages.contacts') }}">Контакты1</a></li>
                           </ul>
                       </div>
 

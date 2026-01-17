@@ -8,7 +8,6 @@ RUN npm ci
 COPY resources ./resources
 COPY vite.config.js tailwind.config.js postcss.config.js ./
 RUN npm run build
-
 # -------------------------------
 # 2️⃣ Laravel PHP
 # -------------------------------

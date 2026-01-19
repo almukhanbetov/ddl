@@ -769,3 +769,63 @@ textarea {
 .text-white{
   color: #fff !important;
 }
+
+/* my style */
+:root{
+    --stake-bg: #0B1320;
+    --stake-card: #101B33;
+    --stake-green:#16FF00;
+}
+.dropdown-menu {
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.dropdown-item {
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: #ffc107;
+    color: #000;
+    font-weight: 600;
+}
+
+/* хедер и навигация */
+.site-navbar,
+.navbar,
+.navbar-nav,
+.nav-item {
+    overflow: visible !important;
+}
+
+/* бейдж корзины */
+.cart-badge {
+    position: absolute;
+    top: 6px;
+    right: 2px;
+
+    width: 18px;
+    height: 18px;
+
+    background: #dc2626;
+    color: #fff;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 50;
+}
+.phone-select {
+    cursor: pointer;
+}
+.phone-select:hover {
+    background: rgba(0,0,0,0.03);
+}

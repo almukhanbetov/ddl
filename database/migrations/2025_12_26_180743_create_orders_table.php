@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
             $table->string('phone');
-            $table->text('address');
+            $table->string('email');
+            $table->text('address')->nullable();
             $table->integer('total_price');
             $table->string('status')->default('new'); // new, paid, canceled
             $table->timestamps();

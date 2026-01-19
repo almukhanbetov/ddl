@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $fillable = [
+        'category_id',
         'name',
         'slug',
         'price',
@@ -20,7 +21,10 @@ class Product extends Model
     protected $casts = [
         'gallery' => 'array'
     ];
-
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
     public function bookings()
     {
         return $this->hasMany(Booking::class);

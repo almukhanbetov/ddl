@@ -12,7 +12,7 @@
                             <button type="submit" class="product-item" style="border:0;background:none;padding:0;">
                                 <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid product-thumbnail">
 
-                                <h3 class="product-title">{{ $product->name }}</h3>
+                                <h3 class="product-title">{{ $product->category?->name ?? 'Без категории' }}</h3>
 
                                 <strong class="product-price">{{ $product->price }}</strong>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -10,15 +11,21 @@ class PageController extends Controller
     public function index(){
         return view("pages.index");
     }
-
     public function shop(Request $request){
-          $query = Product::query();
-        // фильтр по наличию
-          if ($request->has('available')) {
-               $query->where('status', 'available');
+          $categorySlug = $request->query('category');
+          $currentCategory = null;
+          $query = Product::with('category')
+               ->where('status', 'available');
+
+          if ($categorySlug) {
+               $currentCategory = Category::where('slug', $categorySlug)->firstOrFail();
+               $query->where('category_id', $currentCategory->id);
           }
-          $products = $query->latest()->paginate(30);
-          return view("pages.shop", compact('products'));
+
+          return view('pages.shop', [
+               'products' => $query->get(),
+               'currentCategory' => $currentCategory,
+          ]);
     }
     public function about(){
          return view("pages.about");

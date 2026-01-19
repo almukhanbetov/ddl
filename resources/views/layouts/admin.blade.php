@@ -22,6 +22,9 @@
                class="block px-3 py-2 rounded hover:bg-slate-700">
                 📅 Бронирования
             </a> --}}
+                 <a href="{{ route('admin.leads.index') }}" class="block px-3 py-2 rounded hover:bg-slate-700">
+                    📥 Лиды
+                </a>
                 <a href="{{ route('admin.users.index') }}" class="block px-3 py-2 rounded hover:bg-slate-700">
                     📅 Пользователь
                 </a>
@@ -31,6 +34,7 @@
                 <a href="{{ route('pages.index') }}" class="block px-3 py-2 rounded hover:bg-slate-700">
                     ⬅ Вернуться на сайт
                 </a>
+               
             </nav>
         </aside>
         <!-- MAIN -->

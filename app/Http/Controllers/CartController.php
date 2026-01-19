@@ -46,11 +46,15 @@ class CartController extends Controller
         return back()->with('success', 'Количество обновлено');
     }
     // Удалить товар из корзины
-    public function remove(Request $request, Product $product)
+   public function remove(Request $request, int $id)
     {
         $cart = $request->session()->get('cart', []);
-        unset($cart[$product->id]);
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+        }
         $request->session()->put('cart', $cart);
-        return back()->with('success', 'Товар удалён из корзины');
+
+        return back()->with('success', 'Товар удалён');
     }
+
 }

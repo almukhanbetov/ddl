@@ -2,13 +2,12 @@
 namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Product;
 use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     public function create()
     {
-         $cart = session('cart', []);
+        $cart = session('cart', []);
         if (empty($cart)) {
             return redirect()->route('cart.index')
                 ->with('error', 'Корзина пуста. Добавьте товары 🙂');
@@ -42,9 +41,7 @@ class OrderController extends Controller
                 'qty'       => $item['qty'],
             ]);
         }
-
         session()->forget('cart');
-
         return redirect()->route('order.success');
     }
 }

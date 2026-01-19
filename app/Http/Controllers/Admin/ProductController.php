@@ -1,40 +1,33 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
         $query = Product::query();
-
         // фильтр по наличию
         if ($request->has('available')) {
             $query->where('status', 'available');
         }
-
         $products = $query->orderByDesc('id')->paginate(30);
-
         return view('admin.products.index', compact('products'));
     }
-
     public function create()
     {
-       
-        return view('admin.products.create');
+       $categories = Category::all();
+        return view('admin.products.create', compact('categories'));
     }
-
     public function store(Request $request)
-    {
+    {      
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
+            'category_id' => ['reqyured','integer'],
             'price'       => ['required', 'integer', 'min:0'],
             'quantity'    => ['required', 'integer', 'min:0'],
             'description' => ['nullable', 'string'],
@@ -45,7 +38,7 @@ class ProductController extends Controller
         ]);
      
         $data['slug'] = Str::slug($data['name']);
-
+       
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
         }
@@ -63,23 +56,26 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {       
-        return view('admin.products.edit', compact('product'));
+        $categories = Category::all();
+        return view('admin.products.edit', compact('product', 'categories'));
     }
     public function show(Product $product)
     {
         return view('admin.products.show', compact('product'));
     }
     public function update(Request $request, Product $product)
-    {
+    {       
+       
         $data = $request->validate([
             'name'        => 'required|string|max:255',
+            'category_id' => 'required|integer',
             'price'       => 'required|integer|min:0',
             'quantity'    => 'required|integer|min:0',
             'description' => 'nullable|string',
             'status'      => 'required|in:available,unavailable,archived',
             'image'       => 'nullable|image|max:4096', // это теперь файл
         ]);
-
+        
         // если выбрали НОВОЕ фото
         if ($request->hasFile('image')) {
 

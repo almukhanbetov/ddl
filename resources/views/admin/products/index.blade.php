@@ -1,15 +1,10 @@
 @extends('layouts.admin')
-
 @section('title', 'Товары')
-
 @section('content')
-
     <a href="{{ route('admin.products.create') }}" class="px-4 py-2 bg-green-500 rounded hover:bg-green-600">
         ➕ Добавить товар
     </a>
-
     <div class="mt-6 bg-slate-800 border border-slate-700 rounded-lg p-4">
-
         <table class="w-full">
             <thead class="text-gray-400">
                 <tr>
@@ -21,7 +16,6 @@
                     <th class="text-left p-2"></th>
                 </tr>
             </thead>
-
             <tbody>
                 @forelse($products as $product)
                     <tr class="border-t border-slate-700">
@@ -41,7 +35,6 @@
                             @endif
                         </td>
                         <td class="px-4 py-3 flex gap-2">
-
                             {{-- SHOW — глаз --}}
                             <a href="{{ route('admin.products.show', $product) }}"
                                 class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-blue-400 transition">
@@ -53,8 +46,6 @@
                                     <circle cx="12" cy="12" r="3" stroke-width="2" />
                                 </svg>
                             </a>
-
-
                             {{-- EDIT — карандаш --}}
                             <a href="{{ route('admin.products.edit', $product) }}"
                                 class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-yellow-400 transition">
@@ -65,8 +56,6 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h6" />
                                 </svg>
                             </a>
-
-
                             {{-- DELETE — крестик / корзина --}}
                             <form method="POST" action="{{ route('admin.products.destroy', $product) }}"
                                 onsubmit="return confirm('Удалить товар?')">
@@ -81,10 +70,7 @@
                                     </svg>
                                 </button>
                             </form>
-
                         </td>
-
-
                     </tr>
                 @empty
                     <p>Товаров пока нет</p>

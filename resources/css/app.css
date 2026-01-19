@@ -7,3 +7,19 @@
     --stake-card: #101B33;
     --stake-green:#16FF00;
 }
+.dropdown-menu {
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.dropdown-item {
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: #ffc107;
+    color: #000;
+    font-weight: 600;
+}

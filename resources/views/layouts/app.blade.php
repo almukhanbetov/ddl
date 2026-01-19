@@ -26,7 +26,7 @@
 
 
 
-    <script src="{{ asset('ddl/js/bootstrap.js') }}"></script>
+    {{-- <script src="{{ asset('ddl/js/bootstrap.js') }}"></script> --}}
     <script src="{{ asset('ddl/js/custom.js') }}"></script>
 </body>
 

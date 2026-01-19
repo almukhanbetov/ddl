@@ -12,24 +12,66 @@
                     <a class="nav-link" href="{{ route('pages.index') }}">Главная</a>
                 </li>
 
-                <li class="nav-item {{ Route::is('pages.shop') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('pages.shop') }}">Магазин</a>
-                </li>
+                <li
+                    class="nav-item dropdown
+                    {{ request()->routeIs('pages.shop') ? 'active' : '' }}">
 
+                    <a class="nav-link dropdown-toggle
+                        {{ request('category') ? 'text-warning' : '' }}"
+                        href="{{ route('pages.shop') }}" id="shopDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Магазин
+                    </a>
+                  
+                    <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="shopDropdown">
+                        {{-- Все товары --}}
+                        <li>
+                            <a class="dropdown-item
+                                {{ !request('category') ? 'active' : '' }}"
+                                href="{{ route('pages.shop') }}">
+                                Все товары
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        {{-- Категории --}}
+                        @foreach ($menuCategories as $category)
+                            <li>
+                                <a class="dropdown-item
+                                    {{ request('category') === $category->slug ? 'active' : '' }}"
+                                    href="{{ route('pages.shop', ['category' => $category->slug]) }}">
+                                    {{ $category->name }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </li>
                 <li class="nav-item {{ Route::is('pages.about') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('pages.about') }}">О нас</a>
+                    <a class="nav-link" href="{{ route('pages.about') }}">О нас </a>
                 </li>
-
                 <li class="nav-item {{ Route::is('pages.contacts') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('pages.contacts') }}">Контакты</a>
                 </li>
 
             </ul>
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                <li><a class="nav-link" href="{{ route('register') }}"><img
-                            src="{{ asset('ddl/images/user.svg') }}"></a></li>
-                <li><a class="nav-link" href="{{ route('cart.index') }}"><img
-                            src="{{ asset('ddl/images/cart.svg') }}"></a></li>
+                <li><a class="nav-link" href="{{ route('register') }}">
+                        <img src="{{ asset('ddl/images/user.svg') }}">
+                    </a>
+                </li>
+
+                <li class="nav-item position-relative">
+                    <a class="nav-link position-relative" href="{{ route('cart.index') }}">
+                        <img src="{{ asset('ddl/images/cart.svg') }}" style="width:24px">
+
+                        @if ($cartCount > 0)
+                            <span class="cart-badge">
+                                {{ $cartCount }}
+                            </span>
+                        @endif
+                    </a>
+                </li>
             </ul>
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
                 {{-- Если гость --}}
@@ -53,7 +95,6 @@
                         <a href="{{ route('admin.dashboard') }}"
                             class="text-white no-underline">{{ auth()->user()->name }}</a>
                     </li>
-
                     <li class="nav-item">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

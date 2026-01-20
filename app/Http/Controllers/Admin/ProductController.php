@@ -27,7 +27,7 @@ class ProductController extends Controller
     {      
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
-            'category_id' => ['reqyured','integer'],
+            'category_id' => ['required','integer'],
             'price'       => ['required', 'integer', 'min:0'],
             'quantity'    => ['required', 'integer', 'min:0'],
             'description' => ['nullable', 'string'],
@@ -37,13 +37,11 @@ class ProductController extends Controller
             'gallery.*'   => ['nullable', 'image', 'max:4096'],
         ]);
      
-        $data['slug'] = Str::slug($data['name']);
-       
+        $data['slug'] = Str::slug($data['name']);       
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
         }
         $galleryPaths = [];
-
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $file) {
                 $galleryPaths[] = $file->store('products/gallery', 'public');
@@ -53,7 +51,6 @@ class ProductController extends Controller
         Product::create($data);
         return redirect()->route('admin.products.index')->with('success', 'Товар создан');
     }
-
     public function edit(Product $product)
     {       
         $categories = Category::all();
@@ -64,8 +61,7 @@ class ProductController extends Controller
         return view('admin.products.show', compact('product'));
     }
     public function update(Request $request, Product $product)
-    {       
-       
+    {             
         $data = $request->validate([
             'name'        => 'required|string|max:255',
             'category_id' => 'required|integer',
@@ -74,16 +70,13 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'status'      => 'required|in:available,unavailable,archived',
             'image'       => 'nullable|image|max:4096', // это теперь файл
-        ]);
-        
+        ]);        
         // если выбрали НОВОЕ фото
         if ($request->hasFile('image')) {
-
             // при желании можно удалить старый файл
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
-
             // сохраняем новое и кладём путь в $data
             $data['image'] = $request->file('image')
                 ->store('products', 'public');
@@ -91,20 +84,14 @@ class ProductController extends Controller
             // файл не выбирали — оставляем старое значение в БД
             unset($data['image']);
         }
-
         $product->update($data);
-
         return redirect()
             ->route('admin.products.edit', $product)
             ->with('success', 'Изменения сохранены');
-
     }
-
-
     public function destroy(Product $product)
     {
         $product->delete();
-
         return redirect()->route('admin.products.index')
             ->with('success', 'Товар удалён');
     }
@@ -113,13 +100,10 @@ class ProductController extends Controller
         $request->validate([
             'gallery.*' => ['image','max:4096']
         ]);
-
         $gallery = $product->gallery ?? [];
-
         foreach ($request->file('gallery', []) as $file) {
             $gallery[] = $file->store('products/gallery', 'public');
         }
-
         $product->gallery = $gallery;
         $product->save();
 

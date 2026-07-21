@@ -1,0 +1,12 @@
+UPDATE products SET price_day = 90,  damage_cost = 900  WHERE id = 'p1';
+UPDATE products SET price_day = 60,  damage_cost = 600  WHERE id = 'p2';
+UPDATE products SET price_day = 45,  damage_cost = 450  WHERE id = 'p3';
+UPDATE products SET price_day = 35,  damage_cost = 300  WHERE id = 'p4';
+UPDATE products SET price_day = 70,  damage_cost = 800  WHERE id = 'p5';
+UPDATE products SET price_day = 150, damage_cost = 1800 WHERE id = 'p6';
+UPDATE products SET price_day = 110, damage_cost = 1300 WHERE id = 'p7';
+UPDATE products SET price_day = 95,  damage_cost = 1000 WHERE id = 'p8';
+UPDATE products SET price_day = 180, damage_cost = 2200 WHERE id = 'p9';
+UPDATE products SET price_day = 40,  damage_cost = 400  WHERE id = 'p10';
+UPDATE products SET price_day = 50,  damage_cost = 500  WHERE id = 'p11';
+UPDATE products SET price_day = 100, damage_cost = 1100 WHERE id = 'p12';

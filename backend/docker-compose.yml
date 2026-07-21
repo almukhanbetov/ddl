@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: ddl_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-ddl}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ddl_dev_password}
+      POSTGRES_DB: ${DB_NAME:-ddl}
+    ports:
+      - '${DB_PORT:-5434}:5432'
+    volumes:
+      - ddl_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-ddl} -d ${DB_NAME:-ddl}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  ddl_pgdata:

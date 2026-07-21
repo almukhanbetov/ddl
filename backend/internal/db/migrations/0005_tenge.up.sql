@@ -1,0 +1,13 @@
+-- Business operates in Kazakhstan; convert seeded RUB prices to KZT (rate ~5.5).
+UPDATE products SET price_day = 500,  damage_cost = 4950  WHERE id = 'p1';
+UPDATE products SET price_day = 330,  damage_cost = 3300  WHERE id = 'p2';
+UPDATE products SET price_day = 250,  damage_cost = 2500  WHERE id = 'p3';
+UPDATE products SET price_day = 190,  damage_cost = 1650  WHERE id = 'p4';
+UPDATE products SET price_day = 390,  damage_cost = 4400  WHERE id = 'p5';
+UPDATE products SET price_day = 830,  damage_cost = 9900  WHERE id = 'p6';
+UPDATE products SET price_day = 600,  damage_cost = 7150  WHERE id = 'p7';
+UPDATE products SET price_day = 520,  damage_cost = 5500  WHERE id = 'p8';
+UPDATE products SET price_day = 990,  damage_cost = 12100 WHERE id = 'p9';
+UPDATE products SET price_day = 220,  damage_cost = 2200  WHERE id = 'p10';
+UPDATE products SET price_day = 280,  damage_cost = 2750  WHERE id = 'p11';
+UPDATE products SET price_day = 550,  damage_cost = 6050  WHERE id = 'p12';

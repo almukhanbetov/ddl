@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCart } from './CartProvider';
+import { useCustomerAuth } from './CustomerAuthProvider';
+import AuthModal from './AuthModal';
 import ThemeToggle from './ThemeToggle';
 import { ContactsContent } from '@/lib/data';
 import { useLocale } from '@/lib/i18n/useLocale';
@@ -27,7 +29,9 @@ export default function Header({ contacts }: { contacts: ContactsContent }) {
   const locale = useLocale();
   const dict = getDictionary(locale);
   const { count } = useCart();
+  const { customer, setCustomer } = useCustomerAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const telHref = `tel:${contacts.phone.replace(/[^\d+]/g, '')}`;
 
   const NAV_LINKS = [
@@ -75,13 +79,26 @@ export default function Header({ contacts }: { contacts: ContactsContent }) {
               ))}
             </div>
             <ThemeToggle ariaLabel={dict.header.themeToggleAria} />
-            <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <IconUser />
-              {dict.header.login}
-            </a>
+            {customer ? (
+              <Link href={localeHref(locale, '/account')} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <IconUser />
+                {customer.name}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setAuthOpen(true)}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: 'inherit', font: 'inherit', padding: 0 }}
+              >
+                <IconUser />
+                {dict.header.login}
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} onAuthenticated={setCustomer} />
 
       <header className="site-header">
         <div className="container">

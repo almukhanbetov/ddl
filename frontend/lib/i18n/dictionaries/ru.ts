@@ -329,6 +329,27 @@ const ru = {
       'Декор предоставляется исключительно в аренду и подлежит возврату в согласованное время. Самовольное удержание реквизита — основание для отказа в дальнейшем сотрудничестве.',
     ],
   },
+  auth: {
+    loginTitle: 'Вход',
+    registerTitle: 'Регистрация',
+    loginTab: 'Вход',
+    registerTab: 'Регистрация',
+    nameLabel: 'Имя',
+    namePlaceholder: 'Имя и фамилия',
+    emailLabel: 'Email',
+    emailPlaceholder: 'you@example.com',
+    passwordLabel: 'Пароль',
+    passwordPlaceholder: 'Не менее 6 символов',
+    closeAria: 'Закрыть',
+    submitting: 'Отправляем…',
+    loginSubmit: 'Войти',
+    registerSubmit: 'Зарегистрироваться',
+    errorGeneric: 'Не удалось выполнить вход',
+    accountBreadcrumb: 'Личный кабинет',
+    loading: 'Загрузка…',
+    notLoggedIn: 'Вы не вошли в аккаунт.',
+    logout: 'Выйти',
+  },
 };
 
 export default ru;

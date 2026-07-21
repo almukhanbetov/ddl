@@ -45,6 +45,11 @@ func New(h *handlers.Handler, corsOrigins []string, uploadDir string) *gin.Engin
 		api.GET("/reviews", h.ListReviews)
 		api.POST("/reviews", h.CreateReview)
 
+		api.POST("/auth/register", h.CustomerRegister)
+		api.POST("/auth/login", h.CustomerLogin)
+		api.POST("/auth/logout", h.CustomerLogout)
+		api.GET("/auth/me", h.RequireCustomer, h.CustomerMe)
+
 		admin := api.Group("/admin")
 		{
 			admin.POST("/auth/login", h.AdminLogin)

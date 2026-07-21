@@ -40,7 +40,7 @@ func (h *Handler) AdminLogin(c *gin.Context) {
 		return
 	}
 
-	token, expiresAt, err := auth.IssueToken(h.jwtSecret, user.ID, user.Email)
+	token, expiresAt, err := auth.IssueToken(h.jwtSecret, user.ID, user.Email, auth.RoleAdmin)
 	if err != nil {
 		errJSON(c, http.StatusInternalServerError, "failed to issue session")
 		return
@@ -74,7 +74,7 @@ func (h *Handler) RequireAdmin(c *gin.Context) {
 	}
 
 	claims, err := auth.ParseToken(h.jwtSecret, cookie)
-	if err != nil {
+	if err != nil || claims.Role != auth.RoleAdmin {
 		errJSON(c, http.StatusUnauthorized, "сессия истекла, войдите снова")
 		c.Abort()
 		return

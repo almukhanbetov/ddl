@@ -9,13 +9,20 @@ import (
 )
 
 const CookieName = "ddl_admin_token"
+const CustomerCookieName = "ddl_customer_token"
 const sessionTTL = 7 * 24 * time.Hour
+
+const (
+	RoleAdmin    = "admin"
+	RoleCustomer = "customer"
+)
 
 var ErrInvalidToken = errors.New("invalid or expired token")
 
 type Claims struct {
 	UserID int64  `json:"userId"`
 	Email  string `json:"email"`
+	Role   string `json:"role"`
 	jwt.RegisteredClaims
 }
 
@@ -28,11 +35,12 @@ func CheckPassword(hash, password string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
 }
 
-func IssueToken(secret string, userID int64, email string) (string, time.Time, error) {
+func IssueToken(secret string, userID int64, email string, role string) (string, time.Time, error) {
 	expiresAt := time.Now().Add(sessionTTL)
 	claims := Claims{
 		UserID: userID,
 		Email:  email,
+		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

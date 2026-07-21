@@ -325,6 +325,27 @@ const kk: typeof ru = {
       'Декор тек жалдауға беріледі және келісілген уақытта қайтарылуға тиіс. Реквизитті өз бетінше ұстап қалу — келешекте ынтымақтастықтан бас тарту үшін негіз.',
     ],
   },
+  auth: {
+    loginTitle: 'Кіру',
+    registerTitle: 'Тіркелу',
+    loginTab: 'Кіру',
+    registerTab: 'Тіркелу',
+    nameLabel: 'Аты',
+    namePlaceholder: 'Аты-жөні',
+    emailLabel: 'Email',
+    emailPlaceholder: 'you@example.com',
+    passwordLabel: 'Құпия сөз',
+    passwordPlaceholder: 'Кемінде 6 таңба',
+    closeAria: 'Жабу',
+    submitting: 'Жіберілуде…',
+    loginSubmit: 'Кіру',
+    registerSubmit: 'Тіркелу',
+    errorGeneric: 'Кіру сәтсіз аяқталды',
+    accountBreadcrumb: 'Жеке кабинет',
+    loading: 'Жүктелуде…',
+    notLoggedIn: 'Сіз аккаунтқа кірмегенсіз.',
+    logout: 'Шығу',
+  },
 };
 
 export default kk;

@@ -1,0 +1,7 @@
+.env
+.env.*
+!.env.example
+tmp/
+uploads/
+ddl-api
+*.log

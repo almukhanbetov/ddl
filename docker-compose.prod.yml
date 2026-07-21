@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: ddl_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ddl_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    image: ${DOCKERHUB_USERNAME}/ddl-backend:latest
+    container_name: ddl_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_ENV: production
+      HTTP_PORT: 8082
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}?sslmode=disable
+      DELIVERY_COST: ${DELIVERY_COST}
+      JWT_SECRET: ${JWT_SECRET}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - ddl_uploads:/app/uploads
+    ports:
+      - '127.0.0.1:8082:8082'
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME}/ddl-frontend:latest
+    container_name: ddl_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '127.0.0.1:3002:3002'
+
+volumes:
+  ddl_pgdata:
+  ddl_uploads:

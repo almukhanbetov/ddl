@@ -1,31 +1,39 @@
 'use client';
 
 import { useEffect, useState, type SubmitEvent } from 'react';
-import { SiteContent } from '@/lib/data';
-import { getSiteContent } from '@/lib/api';
-import { adminUpdateSiteContent, ApiError } from '@/lib/adminApi';
+import { SiteContent, LocalizedSiteContent } from '@/lib/data';
+import { adminGetSiteContent, adminUpdateSiteContent, ApiError } from '@/lib/adminApi';
+
+export type ContentLocale = 'ru' | 'kk';
 
 export function useSiteContent() {
-  const [content, setContent] = useState<SiteContent | null>(null);
+  const [data, setData] = useState<LocalizedSiteContent | null>(null);
+  const [locale, setLocale] = useState<ContentLocale>('ru');
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    getSiteContent()
-      .then(setContent)
+    adminGetSiteContent()
+      .then(setData)
       .catch((err) => setError(err instanceof ApiError ? err.message : 'Не удалось загрузить тексты'));
   }, []);
 
+  const content = data ? data[locale] : null;
+
+  const setContent = (updated: SiteContent) => {
+    setData((d) => (d ? { ...d, [locale]: updated } : d));
+  };
+
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!content) return;
+    if (!data) return;
     setError(null);
     setSaved(false);
     setSubmitting(true);
     try {
-      const updated = await adminUpdateSiteContent(content);
-      setContent(updated);
+      const updated = await adminUpdateSiteContent(data);
+      setData(updated);
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
@@ -35,5 +43,5 @@ export function useSiteContent() {
     }
   };
 
-  return { content, setContent, error, saved, submitting, handleSubmit };
+  return { content, setContent, locale, setLocale, error, saved, submitting, handleSubmit };
 }

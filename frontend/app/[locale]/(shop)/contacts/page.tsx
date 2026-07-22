@@ -15,21 +15,9 @@ export default async function ContactsPage({ params }: { params: Promise<{ local
   const { locale } = await params;
   const dict = getDictionary(locale);
   const t = dict.contacts;
-  const { contactsPage, contacts } = await getSiteContent();
+  const { contactsPage, contacts } = await getSiteContent(locale);
   const telHref = `tel:${contacts.phone.replace(/[^\d+]/g, '')}`;
-  // Admin-edited site content is Russian-only; Kazakh keeps the translated dictionary copy.
-  const c: ContactsPageContent = locale === 'kk'
-    ? {
-        photo: contactsPage.photo,
-        eyebrow: t.eyebrow,
-        heading: t.heading,
-        intro: t.intro,
-        mapCaption: t.mapCaption,
-        visitNote: t.visitNote,
-        telegramNote: t.telegramNote,
-        whatsappNote: t.whatsappNote,
-      }
-    : contactsPage;
+  const c: ContactsPageContent = contactsPage;
 
   return (
     <div className="container">

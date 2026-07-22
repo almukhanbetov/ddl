@@ -2,16 +2,18 @@
 
 import { useSiteContent } from '@/lib/useSiteContent';
 import ContentSaveBar from '@/components/admin/ContentSaveBar';
+import ContentLocaleTabs from '@/components/admin/ContentLocaleTabs';
 import ImageUploadField from '@/components/admin/ImageUploadField';
 
 export default function AdminContentDeliveryPage() {
-  const { content, setContent, error, saved, submitting, handleSubmit } = useSiteContent();
+  const { content, setContent, locale, setLocale, error, saved, submitting, handleSubmit } = useSiteContent();
 
   if (error && !content) return <p className="admin-error">{error}</p>;
   if (!content) return <p style={{ color: 'var(--ink-soft)' }}>Загрузка…</p>;
 
   return (
     <form onSubmit={handleSubmit}>
+      <ContentLocaleTabs locale={locale} onChange={setLocale} />
       <div className="admin-card">
         <h3 style={{ fontSize: 16, marginBottom: 18 }}>Страница «Доставка и оплата»</h3>
 

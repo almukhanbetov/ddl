@@ -188,7 +188,7 @@ svg{ display: block; flex-shrink: 0; }
   border-radius: var(--radius-full); font-size:12.5px; font-weight:600; opacity:.65;
   display:inline-flex; align-items:center;
 }
-.lang-switch button.is-active, .lang-switch a.is-active{ background:#F3F1E8; color: var(--ink); opacity:1; }
+.lang-switch button.is-active, .lang-switch a.is-active{ background:#F3F1E8; color:#123C2F; opacity:1; }
 .lang-switch a:hover{ opacity:.9; }
 
 .theme-toggle{
@@ -237,8 +237,8 @@ svg{ display: block; flex-shrink: 0; }
 .header-search button:hover{ background: var(--accent-dark); }
 
 .header-nav{ display:flex; align-items:center; gap: 26px; flex-shrink:0; }
-.header-nav a{ font-size: 14.5px; font-weight:600; color: var(--ink-soft); position:relative; padding: 6px 0; transition: color .15s; }
-.header-nav a:hover, .header-nav a.is-active{ color: var(--ink); }
+.header-nav a{ font-size: 14.5px; font-weight:600; color: var(--ink); position:relative; padding: 6px 0; transition: color .15s; }
+.header-nav a:hover, .header-nav a.is-active{ color: var(--gold); }
 .header-nav a.is-active::after{
   content:''; position:absolute; left:0; right:0; bottom:-2px; height:2px; background: var(--accent); border-radius:2px;
 }

@@ -40,8 +40,8 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export async function getSiteContent(): Promise<SiteContent> {
-  return apiFetch<SiteContent>('/api/site-content');
+export async function getSiteContent(locale: string = 'ru'): Promise<SiteContent> {
+  return apiFetch<SiteContent>(`/api/site-content?locale=${locale}`);
 }
 
 export async function getCategories(): Promise<Category[]> {

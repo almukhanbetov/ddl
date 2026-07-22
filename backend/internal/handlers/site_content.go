@@ -9,7 +9,21 @@ import (
 )
 
 func (h *Handler) GetSiteContent(c *gin.Context) {
-	content, err := h.repo.GetSiteContent(c.Request.Context())
+	locale := c.DefaultQuery("locale", "ru")
+	if locale != "kk" {
+		locale = "ru"
+	}
+
+	content, err := h.repo.GetSiteContent(c.Request.Context(), locale)
+	if err != nil {
+		errJSON(c, http.StatusInternalServerError, "failed to load site content")
+		return
+	}
+	c.JSON(http.StatusOK, content)
+}
+
+func (h *Handler) AdminGetSiteContent(c *gin.Context) {
+	content, err := h.repo.GetLocalizedSiteContent(c.Request.Context())
 	if err != nil {
 		errJSON(c, http.StatusInternalServerError, "failed to load site content")
 		return
@@ -18,7 +32,7 @@ func (h *Handler) GetSiteContent(c *gin.Context) {
 }
 
 func (h *Handler) AdminUpdateSiteContent(c *gin.Context) {
-	var content models.SiteContent
+	var content models.LocalizedSiteContent
 	if err := c.ShouldBindJSON(&content); err != nil {
 		errJSON(c, http.StatusBadRequest, "invalid request: "+err.Error())
 		return

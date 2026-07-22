@@ -1,4 +1,4 @@
-import type { Product, SiteContent, Category, Subcategory } from './data';
+import type { Product, LocalizedSiteContent, Category, Subcategory } from './data';
 import type { Order } from './api';
 import { ApiError } from './api';
 
@@ -177,8 +177,12 @@ export async function adminUploadImage(file: File): Promise<string> {
   return data.url;
 }
 
-export async function adminUpdateSiteContent(content: SiteContent): Promise<SiteContent> {
-  return adminFetch<SiteContent>('/api/admin/site-content', {
+export async function adminGetSiteContent(): Promise<LocalizedSiteContent> {
+  return adminFetch<LocalizedSiteContent>('/api/admin/site-content');
+}
+
+export async function adminUpdateSiteContent(content: LocalizedSiteContent): Promise<LocalizedSiteContent> {
+  return adminFetch<LocalizedSiteContent>('/api/admin/site-content', {
     method: 'PUT',
     body: JSON.stringify(content),
   });

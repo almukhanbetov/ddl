@@ -130,6 +130,11 @@ export type SiteContent = {
   contactsPage: ContactsPageContent;
 };
 
+export type LocalizedSiteContent = {
+  ru: SiteContent;
+  kk: SiteContent;
+};
+
 export function stockStatus(stock: number): { cls: 'in' | 'low' | 'out'; label: string } {
   if (stock <= 0) return { cls: 'out', label: 'Нет в наличии' };
   if (stock <= 10) return { cls: 'low', label: `Осталось ${stock} шт` };

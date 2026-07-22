@@ -16,38 +16,8 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
   const { locale } = await params;
   const dict = getDictionary(locale);
   const t = dict.delivery;
-  const { deliveryPage } = await getSiteContent();
-  // Admin-edited site content is Russian-only; Kazakh keeps the translated dictionary copy.
-  const c: DeliveryPageContent = locale === 'kk'
-    ? {
-        photo: deliveryPage.photo,
-        eyebrow: t.eyebrow,
-        heading: t.heading,
-        intro: t.intro,
-        courierTitle: t.courierTitle,
-        courierDesc: t.courierDesc,
-        pickupTitle: t.pickupTitle,
-        pickupDesc: t.pickupDesc,
-        paymentTitle: t.paymentTitle,
-        paymentDesc: t.paymentDesc,
-        noPrepayTitle: t.noPrepayTitle,
-        noPrepayDesc: t.noPrepayDesc,
-        zonesTitle: t.zonesTitle,
-        zones: [
-          { label: t.zoneWithin, price: t.zoneWithinPrice },
-          { label: t.zone15, price: t.zone15Price },
-          { label: t.zone40, price: t.zone40Price },
-          { label: t.zoneFar, price: t.zoneFarPrice },
-          { label: t.floorRow, price: t.floorPrice },
-          { label: t.sameDayRow, price: t.sameDayPrice },
-        ],
-        importantTitle: t.importantTitle,
-        importantText: t.importantText,
-        questionsTitle: t.questionsTitle,
-        questionsDesc: t.questionsDesc,
-        contactUs: t.contactUs,
-      }
-    : deliveryPage;
+  const { deliveryPage } = await getSiteContent(locale);
+  const c: DeliveryPageContent = deliveryPage;
 
   return (
     <div className="container">

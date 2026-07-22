@@ -161,6 +161,11 @@ type SiteContent struct {
 	ContactsPage ContactsPageContent `json:"contactsPage"`
 }
 
+type LocalizedSiteContent struct {
+	RU SiteContent `json:"ru"`
+	KK SiteContent `json:"kk"`
+}
+
 type Review struct {
 	ID         int64     `json:"id"`
 	AuthorName string    `json:"authorName"`

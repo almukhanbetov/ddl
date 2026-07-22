@@ -18,36 +18,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const { locale } = await params;
   const dict = getDictionary(locale);
   const t = dict.about;
-  const { aboutPage } = await getSiteContent();
-  // Admin-edited site content is Russian-only; Kazakh keeps the translated dictionary copy.
-  const c: AboutPageContent = locale === 'kk'
-    ? {
-        photo: aboutPage.photo,
-        badge: t.badge,
-        titleBefore: t.titleBefore,
-        titleAccent: t.titleAccent,
-        titleAfter: t.titleAfter,
-        lead: t.lead,
-        stats: [
-          { value: t.stat1Value, label: t.stat1Label },
-          { value: t.stat2Value, label: t.stat2Label },
-          { value: t.stat3Value, label: t.stat3Label },
-          { value: t.stat4Value, label: t.stat4Label },
-        ],
-        principlesEyebrow: t.principlesEyebrow,
-        principlesTitle: t.principlesTitle,
-        principles: [
-          { title: t.qualityTitle, description: t.qualityDesc },
-          { title: t.flexTitle, description: t.flexDesc },
-          { title: t.confirmTitle, description: t.confirmDesc },
-          { title: t.transparentTitle, description: t.transparentDesc },
-        ],
-        showroomEyebrow: t.showroomEyebrow,
-        showroomTitle: t.showroomTitle,
-        showroomDesc: t.showroomDesc,
-        showroomCta: t.showroomCta,
-      }
-    : aboutPage;
+  const { aboutPage } = await getSiteContent(locale);
+  const c: AboutPageContent = aboutPage;
 
   return (
     <div className="container">

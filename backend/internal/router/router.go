@@ -78,6 +78,7 @@ func New(h *handlers.Handler, corsOrigins []string, uploadDir string) *gin.Engin
 				protected.GET("/users", h.ListAdminUsers)
 				protected.POST("/users", h.CreateAdminUser)
 
+				protected.GET("/site-content", h.AdminGetSiteContent)
 				protected.PUT("/site-content", h.AdminUpdateSiteContent)
 
 				protected.POST("/uploads", h.AdminUploadImage)

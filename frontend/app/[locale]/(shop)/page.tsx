@@ -14,7 +14,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const [categories, popular, content] = await Promise.all([
     getCategories(),
     getProducts({ category: 'dishes', limit: 4 }).then((r) => r.items),
-    getSiteContent(),
+    getSiteContent(locale),
   ]);
   const { hero, howItWorks } = content;
 

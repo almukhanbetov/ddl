@@ -291,7 +291,7 @@ svg{ display: block; flex-shrink: 0; }
 
 /* =============== Hero =============== */
 .hero{
-  position:relative; margin-top: 8px;
+  position:relative; margin-top: var(--pad);
   border-radius: var(--radius-xl);
   overflow:hidden;
   background:

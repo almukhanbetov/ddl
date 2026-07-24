@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type SubmitEvent } from 'react';
 import { adminListUsers, adminCreateUser, AdminUser, ApiError } from '@/lib/adminApi';
+import PasswordInput from '@/components/PasswordInput';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -89,7 +90,7 @@ export default function AdminUsersPage() {
           </div>
           <div className="field">
             <label>Пароль</label>
-            <input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Минимум 8 символов" />
+            <PasswordInput required minLength={8} value={password} onChange={setPassword} placeholder="Минимум 8 символов" />
           </div>
           {error && <p className="admin-error">{error}</p>}
           <button type="submit" className="btn btn-primary btn-sm" disabled={submitting}>

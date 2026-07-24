@@ -25,7 +25,8 @@
   --olive:         #1F5A46;
   --olive-tint:    #DEE5D9;
 
-  --gold:          #C9A96E;
+  --gold:          #B8863A;
+  --gold-on-dark:  #E3C084;
 
   --danger:        #C0392B;
   --danger-tint:   #FBE7E3;
@@ -79,7 +80,8 @@
   --olive:         #4F7A68;
   --olive-tint:    #202E28;
 
-  --gold:          #C9A96E;
+  --gold:          #E3C084;
+  --gold-on-dark:  #E3C084;
 
   --danger:        #E06355;
   --danger-tint:   #3D211D;
@@ -172,7 +174,7 @@ svg{ display: block; flex-shrink: 0; }
 }
 .topbar-left{ display:flex; align-items:center; gap:22px; }
 .topbar-left a{ display:flex; align-items:center; gap:7px; opacity:.9; transition: opacity .15s; }
-.topbar-left a:hover{ opacity:1; color: var(--gold); }
+.topbar-left a:hover{ opacity:1; color: var(--gold-on-dark); }
 .topbar-right{ display:flex; align-items:center; gap:18px; }
 .social-row{ display:flex; align-items:center; gap:10px; }
 .social-row a{
@@ -197,7 +199,7 @@ svg{ display: block; flex-shrink: 0; }
   display:flex; align-items:center; justify-content:center;
   transition: background .15s, color .15s, transform .15s;
 }
-.theme-toggle:hover{ background: rgba(255,255,255,.16); color: var(--gold); transform: rotate(12deg); }
+.theme-toggle:hover{ background: rgba(255,255,255,.16); color: var(--gold-on-dark); transform: rotate(12deg); }
 
 /* =============== Header =============== */
 .site-header{
@@ -306,9 +308,9 @@ svg{ display: block; flex-shrink: 0; }
   padding: 7px 16px; border-radius: var(--radius-full); font-size:13px; font-weight:600;
   letter-spacing:.03em; margin-bottom:22px;
 }
-.hero-tag .dot{ width:7px; height:7px; border-radius:50%; background: var(--gold); }
+.hero-tag .dot{ width:7px; height:7px; border-radius:50%; background: var(--gold-on-dark); }
 .hero h1{ font-size: clamp(34px, 4.6vw, 60px); max-width: 780px; color:#fff; }
-.hero h1 em{ font-style: normal; color: var(--gold); }
+.hero h1 em{ font-style: normal; color: var(--gold-on-dark); }
 .hero p.lead{ margin-top:18px; max-width: 560px; font-size:17px; color: rgba(255,255,255,.78); }
 .hero-search{
   margin-top: 34px; max-width: 640px;
@@ -331,7 +333,7 @@ svg{ display: block; flex-shrink: 0; }
 /* =============== Section heading =============== */
 .section{ padding-block: clamp(48px, 6vw, 84px); }
 .section-head{ display:flex; align-items:flex-end; justify-content:space-between; gap: 24px; margin-bottom: 34px; flex-wrap:wrap; }
-.section-head .eyebrow{ display:block; font-size:12.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color: var(--accent); margin-bottom:10px; }
+.section-head .eyebrow{ display:block; font-size:12.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color: var(--gold); margin-bottom:10px; }
 .section-head h2{ font-size: clamp(26px, 3vw, 38px); }
 .section-head p{ color: var(--ink-soft); margin-top:10px; max-width:560px; }
 
@@ -585,6 +587,16 @@ svg{ display: block; flex-shrink: 0; }
 .input-with-icon svg{ position:absolute; left:15px; top:50%; transform:translateY(-50%); color: var(--ink-faint); }
 .input-with-icon input{ padding-left:42px; }
 
+.password-field{ position:relative; }
+.password-field input{ padding-right:44px; }
+.password-field button{
+  position:absolute; right:6px; top:50%; transform:translateY(-50%);
+  width:32px; height:32px; border:none; background:transparent; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; color: var(--ink-faint);
+  transition: color .15s, background .15s;
+}
+.password-field button:hover{ color: var(--ink); background: var(--surface-2); }
+
 .date-hint{ display:flex; align-items:center; gap:10px; margin-top:14px; background: var(--accent-tint); color: var(--accent-dark); border-radius: var(--radius-md); padding: 12px 16px; font-size:13.5px; font-weight:600; }
 
 .toggle-group{ display:flex; gap:10px; background: var(--surface-2); padding:5px; border-radius: var(--radius-full); border:1px solid var(--border); }
@@ -617,7 +629,7 @@ svg{ display: block; flex-shrink: 0; }
   display:flex; gap:10px; margin-top:20px; padding:14px 16px; border-radius: var(--radius-md);
   background: rgba(201,169,110,.15); border:1px solid rgba(201,169,110,.35); font-size:12.5px; line-height:1.55; color:#E7D8BE;
 }
-.summary-note svg{ flex-shrink:0; color: var(--gold); margin-top:1px; }
+.summary-note svg{ flex-shrink:0; color: var(--gold-on-dark); margin-top:1px; }
 .summary-panel .btn-primary{ margin-top:22px; width:100%; padding:16px; font-size:15.5px; }
 .summary-trust{ display:flex; flex-direction:column; gap:10px; margin-top:20px; font-size:12.5px; color: rgba(239,231,218,.6); }
 .summary-trust div{ display:flex; align-items:center; gap:9px; }
@@ -666,9 +678,9 @@ svg{ display: block; flex-shrink: 0; }
 .footer-col h5{ font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#fff; margin-bottom:18px; }
 .footer-col ul li{ margin-bottom:11px; }
 .footer-col a{ font-size:14px; color: rgba(239,231,218,.68); transition: color .15s; }
-.footer-col a:hover{ color: var(--gold); }
+.footer-col a:hover{ color: var(--gold-on-dark); }
 .footer-contacts li{ display:flex; align-items:flex-start; gap:10px; font-size:14px; color: rgba(239,231,218,.75); }
-.footer-contacts svg{ color: var(--gold); margin-top:2px; }
+.footer-contacts svg{ color: var(--gold-on-dark); margin-top:2px; }
 .footer-bottom{ border-top:1px solid rgba(255,255,255,.1); padding-block:22px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:13px; color: rgba(239,231,218,.55); }
 .footer-bottom .legal-links{ display:flex; gap:22px; }
 .footer-bottom a:hover{ color:#fff; }
@@ -769,6 +781,31 @@ svg{ display: block; flex-shrink: 0; }
   background: var(--surface); color: var(--ink);
 }
 
+/* =============== Admin accordion (products by category) =============== */
+.admin-accordion-item{ border:1px solid var(--border); border-radius: var(--radius-md); overflow:hidden; }
+.admin-accordion-item + .admin-accordion-item{ margin-top:12px; }
+.admin-accordion-head{
+  width:100%; display:flex; align-items:center; gap:12px; padding:16px 18px;
+  background: var(--surface-2); border:none; text-align:left; font-size:15px; font-weight:700; color: var(--ink);
+}
+.admin-accordion-head .admin-accordion-count{
+  font-size:12px; font-weight:700; color: var(--ink-soft); background: var(--surface);
+  border:1px solid var(--border); border-radius: var(--radius-full); padding:2px 10px;
+}
+.admin-accordion-head .admin-accordion-chevron{ margin-left:auto; transition: transform .15s; color: var(--ink-faint); }
+.admin-accordion-head .admin-accordion-chevron.is-open{ transform: rotate(90deg); }
+.admin-accordion-body{ padding: 6px 18px 14px; }
+
+.admin-accordion-subitem + .admin-accordion-subitem{ margin-top:8px; }
+.admin-accordion-subhead{
+  width:100%; display:flex; align-items:center; gap:10px; padding:11px 4px;
+  background:transparent; border:none; border-bottom:1px solid var(--border-soft); text-align:left;
+  font-size:13.5px; font-weight:600; color: var(--ink-soft);
+}
+.admin-accordion-subhead .admin-accordion-chevron{ margin-left:auto; transition: transform .15s; color: var(--ink-faint); }
+.admin-accordion-subhead .admin-accordion-chevron.is-open{ transform: rotate(90deg); }
+.admin-accordion-subbody{ padding: 4px 0 4px; }
+
 .admin-modal-overlay{
   position:fixed; inset:0; background: rgba(38,33,28,.55); backdrop-filter: blur(3px);
   display:flex; align-items:center; justify-content:center; z-index:200; padding:20px;
@@ -839,10 +876,10 @@ svg{ display: block; flex-shrink: 0; }
 }
 .rules-list li::before{
   content: counter(rules); flex-shrink:0; width:32px; height:32px; border-radius:50%;
-  background: var(--accent-tint); color: var(--accent); display:flex; align-items:center; justify-content:center;
+  background: var(--accent-tint); color: var(--gold); display:flex; align-items:center; justify-content:center;
   font-family: var(--font-display); font-weight:700; font-size:14.5px;
 }
-.rules-list li span{ font-size:14.5px; color: var(--ink-soft); line-height:1.65; padding-top:5px; }
+.rules-list li span{ font-size:14.5px; color: var(--ink); line-height:1.65; padding-top:5px; }
 
 /* =========================================================
    Admin image upload field

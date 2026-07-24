@@ -340,6 +340,8 @@ const ru = {
     emailPlaceholder: 'you@example.com',
     passwordLabel: 'Пароль',
     passwordPlaceholder: 'Не менее 6 символов',
+    showPasswordAria: 'Показать пароль',
+    hidePasswordAria: 'Скрыть пароль',
     closeAria: 'Закрыть',
     submitting: 'Отправляем…',
     loginSubmit: 'Войти',

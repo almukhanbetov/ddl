@@ -336,6 +336,8 @@ const kk: typeof ru = {
     emailPlaceholder: 'you@example.com',
     passwordLabel: 'Құпия сөз',
     passwordPlaceholder: 'Кемінде 6 таңба',
+    showPasswordAria: 'Құпия сөзді көрсету',
+    hidePasswordAria: 'Құпия сөзді жасыру',
     closeAria: 'Жабу',
     submitting: 'Жіберілуде…',
     loginSubmit: 'Кіру',

@@ -5,6 +5,7 @@ import { customerLogin, customerRegister, Customer, ApiError } from '@/lib/custo
 import { useLocale } from '@/lib/i18n/useLocale';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { IconClose } from './Icons';
+import PasswordInput from './PasswordInput';
 
 type Mode = 'login' | 'register';
 
@@ -70,13 +71,14 @@ function ModalContent({ onClose, onAuthenticated }: { onClose: () => void; onAut
         </div>
         <div className="field">
           <label>{t.passwordLabel}</label>
-          <input
-            type="password"
+          <PasswordInput
             required
             minLength={6}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setPassword}
             placeholder={t.passwordPlaceholder}
+            showAria={t.showPasswordAria}
+            hideAria={t.hidePasswordAria}
           />
         </div>
 

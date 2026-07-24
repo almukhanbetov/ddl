@@ -50,8 +50,8 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getSubcategories(categoryId: string): Promise<Subcategory[]> {
-  const data = await apiFetch<{ items: Subcategory[] }>(`/api/categories/${categoryId}/subcategories`);
-  return data.items;
+  const data = await apiFetch<{ items: Subcategory[] | null }>(`/api/categories/${categoryId}/subcategories`);
+  return data.items ?? [];
 }
 
 export async function getProducts(params: {

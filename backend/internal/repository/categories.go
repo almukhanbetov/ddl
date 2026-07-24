@@ -40,7 +40,7 @@ func (r *Repository) ListSubcategories(ctx context.Context, categoryID string) (
 	}
 	defer rows.Close()
 
-	var out []models.Subcategory
+	out := []models.Subcategory{}
 	for rows.Next() {
 		var s models.Subcategory
 		if err := rows.Scan(&s.ID, &s.CategoryID, &s.Name, &s.ItemCount); err != nil {

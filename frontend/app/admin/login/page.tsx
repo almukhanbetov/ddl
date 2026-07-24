@@ -3,6 +3,7 @@
 import { useState, type SubmitEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminLogin, ApiError } from '@/lib/adminApi';
+import PasswordInput from '@/components/PasswordInput';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -44,7 +45,7 @@ export default function AdminLoginPage() {
           </div>
           <div className="field">
             <label>Пароль</label>
-            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+            <PasswordInput required value={password} onChange={setPassword} placeholder="••••••••" />
           </div>
           {error && <p className="admin-error">{error}</p>}
           <button type="submit" className="btn btn-primary btn-block" disabled={submitting} style={{ marginTop: 8 }}>

@@ -1,4 +1,20 @@
-INSERT INTO subcategories (id, category_id, name, item_count, position) VALUES
+-- Seed subcategories/products for tables/chairs/textile/decor/candles/other.
+--
+-- Safety notes:
+--   * categories.id is the stable natural key (a slug, e.g. 'tables',
+--     'chairs') — not a surrogate id — so every insert below is scoped by a
+--     WHERE EXISTS / join against it rather than assuming the row exists.
+--   * Every insert is INSERT ... SELECT with ON CONFLICT DO NOTHING against
+--     the table's real unique constraint, so re-running this migration (or
+--     running it against a database whose categories differ) is a no-op for
+--     rows that don't apply, not an error.
+--   * Each migration already runs inside its own transaction (see
+--     internal/db/migrate.go), so a failure here rolls back atomically —
+--     nothing from this file can be left half-applied.
+
+INSERT INTO subcategories (id, category_id, name, item_count, position)
+SELECT v.id, v.category_id, v.name, v.item_count, v.position
+FROM (VALUES
     ('round',        'tables',  'Круглые столы',                  2, 1),
     ('rect',         'tables',  'Прямоугольные столы',            2, 2),
     ('coffee',       'tables',  'Кофейные и приставные столики',  2, 3),
@@ -19,9 +35,14 @@ INSERT INTO subcategories (id, category_id, name, item_count, position) VALUES
     ('wax',          'candles', 'Свечи',                          2, 2),
 
     ('equipment',    'other',   'Оборудование',                   2, 1),
-    ('misc',         'other',   'Разное',                         2, 2);
+    ('misc',         'other',   'Разное',                         2, 2)
+) AS v(id, category_id, name, item_count, position)
+WHERE EXISTS (SELECT 1 FROM categories c WHERE c.id = v.category_id)
+ON CONFLICT (category_id, id) DO NOTHING;
 
-INSERT INTO products (id, category_id, subcategory_id, name, article, stock, price_day, damage_cost, image_url, description) VALUES
+INSERT INTO products (id, category_id, subcategory_id, name, article, stock, price_day, damage_cost, image_url, description)
+SELECT v.id, v.category_id, v.subcategory_id, v.name, v.article, v.stock, v.price_day, v.damage_cost, v.image_url, v.description
+FROM (VALUES
     ('t1', 'tables',  'round',     'Стол круглый банкетный, диаметр 180 см',       'TB-1001', 12, 4500, 55000, 'https://picsum.photos/seed/table-round-180/800/800',    'Банкетный стол на 8-10 персон для крупных мероприятий.'),
     ('t2', 'tables',  'round',     'Стол круглый фуршетный, диаметр 90 см',        'TB-1002', 20, 2800, 32000, 'https://picsum.photos/seed/table-round-90/800/800',     'Компактный фуршетный стол для коктейльных зон.'),
     ('t3', 'tables',  'rect',      'Стол прямоугольный банкетный 180x80 см',       'TB-2001', 18, 3800, 45000, 'https://picsum.photos/seed/table-rect-180/800/800',     'Классический банкетный стол для рассадки гостей.'),
@@ -58,7 +79,12 @@ INSERT INTO products (id, category_id, subcategory_id, name, article, stock, pri
     ('o1', 'other',   'equipment', 'Обогреватель уличный газовый',                 'OT-1001', 5,  4500, 55000, 'https://picsum.photos/seed/other-heater-outdoor/800/800', 'Газовый уличный обогреватель для мероприятий на открытом воздухе.'),
     ('o2', 'other',   'equipment', 'Генератор дыма для первого танца',             'OT-1002', 3,  3200, 38000, 'https://picsum.photos/seed/other-smoke-machine/800/800',  'Генератор лёгкого дыма для эффектного первого танца.'),
     ('o3', 'other',   'misc',      'Стойка для регистрации гостей',                'OT-2001', 4,  2800, 32000, 'https://picsum.photos/seed/other-welcome-stand/800/800',  'Стойка для welcome-зоны и регистрации гостей.'),
-    ('o4', 'other',   'misc',      'Мольберт деревянный для плана рассадки',       'OT-2002', 8,  1200, 14000, 'https://picsum.photos/seed/other-easel-wood/800/800',     'Деревянный мольберт для плана рассадки или welcome-таблички.');
+    ('o4', 'other',   'misc',      'Мольберт деревянный для плана рассадки',       'OT-2002', 8,  1200, 14000, 'https://picsum.photos/seed/other-easel-wood/800/800',     'Деревянный мольберт для плана рассадки или welcome-таблички.')
+) AS v(id, category_id, subcategory_id, name, article, stock, price_day, damage_cost, image_url, description)
+WHERE EXISTS (
+    SELECT 1 FROM subcategories s WHERE s.category_id = v.category_id AND s.id = v.subcategory_id
+)
+ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO product_images (product_id, position, image_url)
 SELECT p.id, s.pos, 'https://picsum.photos/seed/' || p.seed || s.suffix || '/1000/860'
@@ -76,7 +102,16 @@ FROM (VALUES
     ('o1', 'other-heater-outdoor'), ('o2', 'other-smoke-machine'), ('o3', 'other-welcome-stand'),
     ('o4', 'other-easel-wood')
 ) AS p(id, seed)
-CROSS JOIN (VALUES (1, ''), (2, '-b'), (3, '-c'), (4, '-d'), (5, '-e')) AS s(pos, suffix);
+CROSS JOIN (VALUES (1, ''), (2, '-b'), (3, '-c'), (4, '-d'), (5, '-e')) AS s(pos, suffix)
+WHERE EXISTS (SELECT 1 FROM products pr WHERE pr.id = p.id)
+ON CONFLICT (product_id, position) DO NOTHING;
 
-UPDATE categories SET item_count = 6 WHERE id IN ('tables', 'chairs', 'textile', 'decor');
-UPDATE categories SET item_count = 4 WHERE id IN ('candles', 'other');
+-- Recomputed from the real row count rather than a fixed number, since the
+-- inserts above may have skipped rows (WHERE EXISTS) if this database's
+-- categories/subcategories don't fully match the seed set. No-op if the
+-- category doesn't exist (WHERE c.id IN matches zero rows, not an error).
+UPDATE categories c
+SET item_count = (
+    SELECT COUNT(*) FROM products p WHERE p.category_id = c.id
+)
+WHERE c.id IN ('tables', 'chairs', 'textile', 'decor', 'candles', 'other');

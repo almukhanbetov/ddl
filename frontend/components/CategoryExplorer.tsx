@@ -31,6 +31,8 @@ export default function CategoryExplorer({
     [products, activeSub]
   );
 
+  const activeSubName = subcats.find((s) => s.id === activeSub)?.name ?? '';
+
   return (
     <div className="layout-with-sidebar">
       <aside className="sidebar">
@@ -109,7 +111,7 @@ export default function CategoryExplorer({
             filtered.map((product) => <ProductCard key={product.id} product={product} />)
           ) : (
             <p style={{ gridColumn: '1/-1', color: 'var(--ink-soft)', padding: '60px 0', textAlign: 'center' }}>
-              {t.noItemsInSubcat}
+              {activeSub === 'all' ? t.noItemsInSubcat : t.emptySubcategory(activeSubName)}
             </p>
           )}
         </div>

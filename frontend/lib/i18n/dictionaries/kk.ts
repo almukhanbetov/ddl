@@ -94,6 +94,7 @@ const kk: typeof ru = {
     sortExpensive: 'Алдымен қымбаты',
     sortStock: 'Қолжетімділігі бойынша',
     noItemsInSubcat: 'Бұл ішкі санатта әзірге тауар жоқ.',
+    emptySubcategory: (name: string) => `«${name}» әлі бос — әкімші панелінен осында тауар қосыңыз.`,
     prevAria: 'Артқа',
     nextAria: 'Алға',
   },

@@ -92,6 +92,7 @@ const ru = {
     sortExpensive: 'Сначала дороже',
     sortStock: 'По наличию',
     noItemsInSubcat: 'В этой подкатегории пока нет товаров.',
+    emptySubcategory: (name: string) => `«${name}» пока пуста — добавьте сюда товары в панели администратора.`,
     prevAria: 'Назад',
     nextAria: 'Вперёд',
   },

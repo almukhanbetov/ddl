@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
 
+	"ddl/backend/internal/delivery"
 	"ddl/backend/internal/models"
 	"ddl/backend/internal/repository"
 )
@@ -35,6 +36,7 @@ type quoteRequest struct {
 	RentalStart    string                  `json:"rentalStart" binding:"required"`
 	RentalEnd      string                  `json:"rentalEnd" binding:"required"`
 	DeliveryMethod string                  `json:"deliveryMethod" binding:"required,oneof=delivery pickup"`
+	DeliveryZone   string                  `json:"deliveryZone"`
 }
 
 func (h *Handler) QuoteCart(c *gin.Context) {
@@ -89,16 +91,18 @@ func (h *Handler) QuoteCart(c *gin.Context) {
 		})
 	}
 
-	deliveryCost := 0.0
-	if req.DeliveryMethod == "delivery" {
-		deliveryCost = h.deliveryCost
+	quote, err := delivery.Resolve(req.DeliveryMethod, req.DeliveryZone)
+	if err != nil {
+		errJSON(c, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"days":         days,
 		"itemsTotal":   itemsTotal,
-		"deliveryCost": deliveryCost,
-		"total":        itemsTotal + deliveryCost,
+		"deliveryZone": quote.Zone,
+		"deliveryCost": quote.Cost,
+		"total":        quote.Total(itemsTotal),
 		"items":        items,
 	})
 }
@@ -108,6 +112,7 @@ type createOrderRequest struct {
 	RentalStart    string                  `json:"rentalStart" binding:"required"`
 	RentalEnd      string                  `json:"rentalEnd" binding:"required"`
 	DeliveryMethod string                  `json:"deliveryMethod" binding:"required,oneof=delivery pickup"`
+	DeliveryZone   string                  `json:"deliveryZone"`
 	Address        string                  `json:"address"`
 	ContactName    string                  `json:"contactName" binding:"required"`
 	ContactPhone   string                  `json:"contactPhone" binding:"required"`
@@ -133,9 +138,10 @@ func (h *Handler) CreateOrder(c *gin.Context) {
 		return
 	}
 
-	deliveryCost := 0.0
-	if req.DeliveryMethod == "delivery" {
-		deliveryCost = h.deliveryCost
+	quote, err := delivery.Resolve(req.DeliveryMethod, req.DeliveryZone)
+	if err != nil {
+		errJSON(c, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	phoneVerified := false
@@ -164,7 +170,7 @@ func (h *Handler) CreateOrder(c *gin.Context) {
 		ContactPhone:   req.ContactPhone,
 		PhoneVerified:  phoneVerified,
 		Comment:        req.Comment,
-		DeliveryCost:   deliveryCost,
+		Delivery:       quote,
 	})
 	if err != nil {
 		switch {
@@ -178,7 +184,7 @@ func (h *Handler) CreateOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"order": order})
+	c.JSON(http.StatusCreated, gin.H{"order": order.Public()})
 }
 
 func (h *Handler) GetOrder(c *gin.Context) {
@@ -192,5 +198,5 @@ func (h *Handler) GetOrder(c *gin.Context) {
 		errJSON(c, http.StatusInternalServerError, "failed to load order")
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"order": order})
+	c.JSON(http.StatusOK, gin.H{"order": order.Public()})
 }

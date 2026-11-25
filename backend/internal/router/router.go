@@ -74,6 +74,7 @@ func New(h *handlers.Handler, corsOrigins []string, uploadDir string) *gin.Engin
 
 				protected.GET("/orders", h.AdminListOrders)
 				protected.PATCH("/orders/:publicId/status", h.AdminUpdateOrderStatus)
+				protected.PATCH("/orders/:publicId/delivery-cost", h.AdminUpdateDeliveryCost)
 
 				protected.GET("/users", h.ListAdminUsers)
 				protected.POST("/users", h.CreateAdminUser)

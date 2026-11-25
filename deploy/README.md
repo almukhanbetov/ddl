@@ -71,3 +71,25 @@ docker compose ps
 docker compose logs -f backend
 curl -s https://ddldecor.kz/api/health
 ```
+
+## Admin password (required after the first deploy)
+
+Migration 0003 creates `admin@ddl.ru` with a password that is published in the
+repository. In production the API refuses that password and any session of an
+account that still has it, so nobody can sign in until it is replaced.
+
+1. Check whether an account still has it (`t` means yes):
+
+   ```bash
+   docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"' <<'SQL'
+   SELECT id, email, created_at, md5(password_hash) = '8b1700aa0a0f76183dc383d5a3f4d86b' AS seed_password
+   FROM admin_users ORDER BY id;
+   SQL
+   ```
+
+2. Copy `deploy/set-admin-password.sh` to the server and run it next to
+   `docker-compose.yml`: `bash set-admin-password.sh admin@ddl.ru`.
+3. Replace `JWT_SECRET` in `.env` with the output of `openssl rand -hex 32` and
+   run `docker compose --env-file .env up -d backend`. Sessions live for 7 days
+   and a password change alone does not end them.
+4. Review the accounts listed in step 1 and remove any you don't recognise.

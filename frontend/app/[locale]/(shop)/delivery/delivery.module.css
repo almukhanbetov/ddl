@@ -1,0 +1,7 @@
+.cards{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 56px; }
+.cards .accent{ background: var(--accent-tint); border-color: var(--accent); }
+.cards .accent :global(.step-num){ background: var(--accent); color: #fff; }
+
+@media (max-width: 640px){
+  .cards{ grid-template-columns: 1fr; }
+}

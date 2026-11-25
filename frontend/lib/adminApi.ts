@@ -1,5 +1,5 @@
 import type { Product, LocalizedSiteContent, Category, Subcategory } from './data';
-import type { Order } from './api';
+import type { AdminOrder } from './api';
 import { ApiError } from './api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8082';
@@ -131,16 +131,24 @@ export async function adminDeleteSubcategory(categoryId: string, subcategoryId: 
   await adminFetch(`/api/admin/categories/${categoryId}/subcategories/${subcategoryId}`, { method: 'DELETE' });
 }
 
-export async function adminListOrders(status?: string): Promise<Order[]> {
+export async function adminListOrders(status?: string): Promise<AdminOrder[]> {
   const qs = status ? `?status=${status}` : '';
-  const data = await adminFetch<{ items: Order[] }>(`/api/admin/orders${qs}`);
+  const data = await adminFetch<{ items: AdminOrder[] }>(`/api/admin/orders${qs}`);
   return data.items;
 }
 
-export async function adminUpdateOrderStatus(publicId: string, status: string): Promise<Order> {
-  const data = await adminFetch<{ order: Order }>(`/api/admin/orders/${publicId}/status`, {
+export async function adminUpdateOrderStatus(publicId: string, status: string): Promise<AdminOrder> {
+  const data = await adminFetch<{ order: AdminOrder }>(`/api/admin/orders/${publicId}/status`, {
     method: 'PATCH',
     body: JSON.stringify({ status }),
+  });
+  return data.order;
+}
+
+export async function adminUpdateDeliveryCost(publicId: string, deliveryCost: number): Promise<AdminOrder> {
+  const data = await adminFetch<{ order: AdminOrder }>(`/api/admin/orders/${publicId}/delivery-cost`, {
+    method: 'PATCH',
+    body: JSON.stringify({ deliveryCost }),
   });
   return data.order;
 }

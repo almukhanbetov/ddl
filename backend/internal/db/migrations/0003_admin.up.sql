@@ -6,7 +6,7 @@ CREATE TABLE admin_users (
     created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Dev seed account — email admin@ddl.ru / password admin12345.
--- Change or remove this before any real deployment.
+-- Dev seed account. Its password is public (it was committed to the repository),
+-- so the API refuses it when APP_ENV=production; see deploy/README.md.
 INSERT INTO admin_users (email, name, password_hash) VALUES
     ('admin@ddl.ru', 'Администратор', '$2a$10$LcEDE8DBbrLnZj6Dp9nwUODyWw.qRCtjTXqPucUVdEfBkAdSJNJ7i');

@@ -43,7 +43,7 @@ func main() {
 	}
 
 	repo := repository.New(pool)
-	h := handlers.New(repo, cfg.DeliveryCost, cfg.JWTSecret, cfg.CookieSecure, cfg.UploadDir)
+	h := handlers.New(repo, cfg.JWTSecret, cfg.CookieSecure, cfg.UploadDir, cfg.Env == "production")
 	engine := router.New(h, cfg.CORSOrigins, cfg.UploadDir)
 
 	srv := &http.Server{

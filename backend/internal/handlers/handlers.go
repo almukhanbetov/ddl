@@ -10,14 +10,14 @@ import (
 
 type Handler struct {
 	repo         *repository.Repository
-	deliveryCost float64
 	jwtSecret    string
 	cookieSecure bool
 	uploadDir    string
+	production   bool
 }
 
-func New(repo *repository.Repository, deliveryCost float64, jwtSecret string, cookieSecure bool, uploadDir string) *Handler {
-	return &Handler{repo: repo, deliveryCost: deliveryCost, jwtSecret: jwtSecret, cookieSecure: cookieSecure, uploadDir: uploadDir}
+func New(repo *repository.Repository, jwtSecret string, cookieSecure bool, uploadDir string, production bool) *Handler {
+	return &Handler{repo: repo, jwtSecret: jwtSecret, cookieSecure: cookieSecure, uploadDir: uploadDir, production: production}
 }
 
 func (h *Handler) Health(c *gin.Context) {

@@ -94,6 +94,8 @@ export async function verifyPhoneCode(phone: string, code: string) {
 
 export type CartItemInput = { productId: string; qty: number };
 
+export type DeliveryZone = 'almaty' | 'almaty_region' | 'other_region';
+
 export type QuoteItem = {
   productId: string;
   qty: number;
@@ -106,7 +108,8 @@ export type QuoteItem = {
 export type Quote = {
   days: number;
   itemsTotal: number;
-  deliveryCost: number;
+  /** null: can't be determined automatically, a manager confirms it. */
+  deliveryCost: number | null;
   total: number;
   items: QuoteItem[];
 };
@@ -116,6 +119,7 @@ export async function quoteCart(payload: {
   rentalStart: string;
   rentalEnd: string;
   deliveryMethod: 'delivery' | 'pickup';
+  deliveryZone?: DeliveryZone;
 }): Promise<Quote> {
   return apiFetch('/api/cart/quote', { method: 'POST', body: JSON.stringify(payload) });
 }
@@ -128,24 +132,31 @@ export type OrderItem = {
   lineTotal: number;
 };
 
+/** What the public order API returns: no contact data. */
 export type Order = {
-  id: number;
   publicId: string;
   rentalStart: string;
   rentalEnd: string;
   rentalDays: number;
   deliveryMethod: 'delivery' | 'pickup';
+  deliveryZone: DeliveryZone | null;
+  itemsTotal: number;
+  /** null: can't be determined automatically, a manager confirms it. */
+  deliveryCost: number | null;
+  total: number;
+  status: string;
+  items: OrderItem[];
+};
+
+/** The full record, available to staff through the admin API only. */
+export type AdminOrder = Order & {
+  id: number;
   address?: string;
   contactName: string;
   contactPhone: string;
   phoneVerified: boolean;
   comment: string;
-  itemsTotal: number;
-  deliveryCost: number;
-  total: number;
-  status: string;
   createdAt: string;
-  items: OrderItem[];
 };
 
 export async function getReviews(): Promise<Review[]> {
@@ -178,6 +189,7 @@ export async function createOrder(payload: {
   rentalStart: string;
   rentalEnd: string;
   deliveryMethod: 'delivery' | 'pickup';
+  deliveryZone?: DeliveryZone;
   address?: string;
   contactName: string;
   contactPhone: string;
@@ -186,4 +198,17 @@ export async function createOrder(payload: {
 }): Promise<Order> {
   const data = await apiFetch<{ order: Order }>('/api/orders', { method: 'POST', body: JSON.stringify(payload) });
   return data.order;
+}
+
+/** The order as the holder of its link sees it. */
+export async function getOrder(publicId: string): Promise<Order | null> {
+  // The backend expects a UUID and would fail on anything else.
+  if (!/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(publicId)) return null;
+  try {
+    const data = await apiFetch<{ order: Order }>(`/api/orders/${publicId}`);
+    return data.order;
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) return null;
+    throw err;
+  }
 }

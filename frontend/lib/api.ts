@@ -79,7 +79,7 @@ export async function getProductDetail(id: string): Promise<{ product: ProductDe
 export type PhoneChannel = 'telegram' | 'whatsapp' | 'sms';
 
 export async function sendPhoneCode(phone: string, channel: PhoneChannel) {
-  return apiFetch<{ sent: boolean; expiresInSeconds: number; debugCode: string }>('/api/phone/send', {
+  return apiFetch<{ sent: boolean; expiresInSeconds: number; debugCode?: string }>('/api/phone/send', {
     method: 'POST',
     body: JSON.stringify({ phone, channel }),
   });

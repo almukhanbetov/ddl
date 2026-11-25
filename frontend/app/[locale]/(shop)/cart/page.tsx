@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useCart } from '@/components/CartProvider';
 import { money } from '@/lib/data';
 import { createOrder, ApiError, resolveImageUrl, type DeliveryZone, type Order } from '@/lib/api';
+import { isValidPhone, PHONE_VERIFICATION_ENABLED } from '@/lib/phone';
 import { useLocale } from '@/lib/i18n/useLocale';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { localeHref } from '@/lib/i18n/config';
@@ -43,6 +44,7 @@ export default function CartPage() {
   const [address, setAddress] = useState('');
   const [contactName, setContactName] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [phoneToken, setPhoneToken] = useState('');
   const [comment, setComment] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -77,12 +79,14 @@ export default function CartPage() {
   const total = itemsTotal;
   const itemCount = details.reduce((sum, i) => sum + i.qty, 0);
 
+  const phoneInvalid = phoneTouched && !isValidPhone(phone);
+
   const canSubmit =
     details.length > 0 &&
     // Never submit an order that silently lacks some of the cart positions.
     unresolved.length === 0 &&
     contactName.trim() !== '' &&
-    phone.trim() !== '' &&
+    isValidPhone(phone) &&
     (deliveryMethod === 'pickup' || (deliveryZone !== '' && address.trim() !== '')) &&
     !submitting;
 
@@ -98,7 +102,7 @@ export default function CartPage() {
         deliveryZone: deliveryMethod === 'delivery' && deliveryZone ? deliveryZone : undefined,
         address: deliveryMethod === 'delivery' ? address : undefined,
         contactName,
-        contactPhone: phone,
+        contactPhone: phone.trim(),
         comment,
         phoneToken: phoneToken || undefined,
       });
@@ -320,10 +324,15 @@ export default function CartPage() {
                 <input type="text" placeholder={t.contactNamePlaceholder} value={contactName} onChange={(e) => setContactName(e.target.value)} />
               </div>
               <div className="field">
-                <label>{t.phoneLabel}</label>
+                <label htmlFor="contact-phone">{t.phoneLabel}</label>
                 <div className="phone-verify-row">
                   <input
+                    id="contact-phone"
                     type="tel"
+                    required
+                    aria-invalid={phoneInvalid}
+                    aria-describedby="contact-phone-note"
+                    onBlur={() => setPhoneTouched(true)}
                     placeholder={t.phonePlaceholder}
                     value={phone}
                     onChange={(e) => {
@@ -331,19 +340,31 @@ export default function CartPage() {
                       setPhoneToken('');
                     }}
                   />
-                  <button
-                    type="button"
-                    className="btn btn-outline btn-sm"
-                    disabled={!!phoneToken || phone.trim() === ''}
-                    onClick={() => setModalOpen(true)}
-                  >
-                    {phoneToken ? t.verified : t.verifyBtn}
-                  </button>
+                  {PHONE_VERIFICATION_ENABLED && (
+                    <button
+                      type="button"
+                      className="btn btn-outline btn-sm"
+                      disabled={!!phoneToken || !isValidPhone(phone)}
+                      onClick={() => setModalOpen(true)}
+                    >
+                      {phoneToken ? t.verified : t.verifyBtn}
+                    </button>
+                  )}
                 </div>
-                <div className={`verify-status${phoneToken ? ' is-visible' : ''}`}>
-                  <IconCheckCircle size={15} />
-                  {t.phoneVerifiedNote}
+                <div id="contact-phone-note" style={{ fontSize: 13, marginTop: 10, color: 'var(--ink-soft)' }}>
+                  {phoneInvalid && (
+                    <div role="alert" style={{ color: 'var(--danger)', marginBottom: 4 }}>
+                      {t.phoneInvalid}
+                    </div>
+                  )}
+                  {!PHONE_VERIFICATION_ENABLED && t.phoneManagerNote}
                 </div>
+                {PHONE_VERIFICATION_ENABLED && (
+                  <div className={`verify-status${phoneToken ? ' is-visible' : ''}`}>
+                    <IconCheckCircle size={15} />
+                    {t.phoneVerifiedNote}
+                  </div>
+                )}
               </div>
             </div>
             <div className="field">
@@ -405,12 +426,14 @@ export default function CartPage() {
         </aside>
       </div>
 
-      <PhoneVerifyModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onVerified={(token) => setPhoneToken(token)}
-        phone={phone}
-      />
+      {PHONE_VERIFICATION_ENABLED && (
+        <PhoneVerifyModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onVerified={(token) => setPhoneToken(token)}
+          phone={phone.trim()}
+        />
+      )}
     </div>
   );
 }

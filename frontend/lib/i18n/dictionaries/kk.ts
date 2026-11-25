@@ -186,6 +186,8 @@ const kk: typeof ru = {
     phonePlaceholder: '+7 (___) ___-__-__',
     verifyBtn: 'Растау',
     verified: 'Расталды',
+    phoneInvalid: 'Нөмірді +7 (XXX) XXX-XX-XX форматында көрсетіңіз',
+    phoneManagerNote: 'Менеджер көрсетілген нөмір бойынша сізбен хабарласады',
     phoneVerifiedNote: 'Телефон расталды',
     commentLabel: 'Тапсырысқа пікір',
     commentOptional: '(міндетті емес)',

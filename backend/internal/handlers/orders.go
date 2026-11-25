@@ -132,6 +132,11 @@ func (h *Handler) CreateOrder(c *gin.Context) {
 		return
 	}
 
+	if !validPhone(req.ContactPhone) {
+		errJSON(c, http.StatusBadRequest, "укажите номер телефона в формате +7 (XXX) XXX-XX-XX")
+		return
+	}
+
 	days, err := rentalDays(req.RentalStart, req.RentalEnd)
 	if err != nil {
 		errJSON(c, http.StatusBadRequest, err.Error())
@@ -144,8 +149,9 @@ func (h *Handler) CreateOrder(c *gin.Context) {
 		return
 	}
 
+	// In production codes aren't really sent, so no token proves anything.
 	phoneVerified := false
-	if req.PhoneToken != "" {
+	if req.PhoneToken != "" && !h.production {
 		verified, err := h.repo.HasVerifiedToken(c.Request.Context(), req.ContactPhone, req.PhoneToken)
 		if err != nil {
 			errJSON(c, http.StatusInternalServerError, "failed to check phone verification")

@@ -184,6 +184,8 @@ const ru = {
     phonePlaceholder: '+7 (___) ___-__-__',
     verifyBtn: 'Подтвердить',
     verified: 'Подтверждено',
+    phoneInvalid: 'Укажите номер в формате +7 (XXX) XXX-XX-XX',
+    phoneManagerNote: 'Менеджер свяжется с вами по указанному номеру',
     phoneVerifiedNote: 'Телефон подтверждён',
     commentLabel: 'Комментарий к заказу',
     commentOptional: '(необязательно)',

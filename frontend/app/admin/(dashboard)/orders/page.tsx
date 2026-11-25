@@ -107,8 +107,10 @@ export default function AdminOrdersPage() {
                   <td style={{ fontWeight: 600 }}>{o.contactName}</td>
                   <td>
                     {o.contactPhone}
-                    {o.phoneVerified && (
+                    {o.phoneVerified ? (
                       <span style={{ color: 'var(--success)', marginLeft: 6, fontSize: 12 }}>✓</span>
+                    ) : (
+                      <div style={{ fontSize: 12, color: 'var(--ink-soft)' }}>не проверен</div>
                     )}
                   </td>
                   <td>

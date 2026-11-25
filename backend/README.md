@@ -78,8 +78,10 @@ change or remove this before any real deployment. The admin UI lives at
 
 There's no real Telegram/WhatsApp/SMS provider wired up. `POST /api/phone/send`
 generates a 4-digit code, stores it, and returns it as `debugCode` in the
-response so the flow is testable end-to-end without a real gateway. Swap
-`internal/handlers/phone.go` for a real provider call before shipping this to
+response so the flow is testable end-to-end without a real gateway. With
+`APP_ENV=production` both phone endpoints answer 503, no code is generated or
+logged, and orders are always saved with `phone_verified = false`. Swap
+`internal/handlers/phone.go` for a real provider call before enabling it in
 production, and drop `debugCode` from the response at that point.
 
 ### Pricing and stock are server-authoritative

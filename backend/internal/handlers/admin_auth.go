@@ -48,7 +48,7 @@ func (h *Handler) AdminLogin(c *gin.Context) {
 		return
 	}
 
-	token, expiresAt, err := auth.IssueToken(h.jwtSecret, user.ID, user.Email, auth.RoleAdmin)
+	token, expiresAt, err := auth.IssueAdminToken(h.jwtSecret, user.ID, user.Email, user.PasswordHash)
 	if err != nil {
 		errJSON(c, http.StatusInternalServerError, "failed to issue session")
 		return
@@ -91,6 +91,13 @@ func (h *Handler) RequireAdmin(c *gin.Context) {
 	user, err := h.repo.GetAdminByID(c.Request.Context(), claims.UserID)
 	if err != nil {
 		errJSON(c, http.StatusUnauthorized, "пользователь не найден")
+		c.Abort()
+		return
+	}
+
+	// The password was changed after this session was opened.
+	if !claims.MatchesPassword(h.jwtSecret, user.PasswordHash) {
+		errJSON(c, http.StatusUnauthorized, "сессия истекла, войдите снова")
 		c.Abort()
 		return
 	}

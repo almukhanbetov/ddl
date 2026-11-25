@@ -5,7 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/components/CartProvider';
 import { money } from '@/lib/data';
-import { createOrder, ApiError, resolveImageUrl } from '@/lib/api';
+import { createOrder, ApiError, resolveImageUrl, type DeliveryZone, type Order } from '@/lib/api';
+import { isValidPhone, PHONE_VERIFICATION_ENABLED } from '@/lib/phone';
 import { useLocale } from '@/lib/i18n/useLocale';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { localeHref } from '@/lib/i18n/config';
@@ -21,8 +22,7 @@ import {
   IconCheckCircle,
   IconPhone,
 } from '@/components/Icons';
-
-const DELIVERY_COST = 5000;
+import styles from './cart.module.css';
 
 function todayISO(offsetDays = 0) {
   const d = new Date();
@@ -31,7 +31,7 @@ function todayISO(offsetDays = 0) {
 }
 
 export default function CartPage() {
-  const { details, setQty, removeFromCart, clearCart } = useCart();
+  const { details, unresolved, retryLoad, setQty, removeFromCart, clearCart } = useCart();
   const locale = useLocale();
   const dict = getDictionary(locale);
   const t = dict.cart;
@@ -40,15 +40,17 @@ export default function CartPage() {
   const [dateStart, setDateStart] = useState('');
   const [dateEnd, setDateEnd] = useState('');
   const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>('delivery');
+  const [deliveryZone, setDeliveryZone] = useState<DeliveryZone | ''>('');
   const [address, setAddress] = useState('');
   const [contactName, setContactName] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [phoneToken, setPhoneToken] = useState('');
   const [comment, setComment] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [confirmedOrderId, setConfirmedOrderId] = useState<string | null>(null);
+  const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
     // Computed from the client's clock after mount so the SSR pass and first
@@ -70,15 +72,22 @@ export default function CartPage() {
     () => details.reduce((sum, i) => sum + i.product.priceDay * i.qty * days, 0),
     [details, days]
   );
-  const deliveryCost = deliveryMethod === 'delivery' ? DELIVERY_COST : 0;
-  const total = itemsTotal + deliveryCost;
+  // Display only: the backend applies the same rules and stores its own result.
+  const zoneMissing = deliveryMethod === 'delivery' && deliveryZone === '';
+  const deliveryPending = deliveryMethod === 'delivery' && (deliveryZone === 'almaty_region' || deliveryZone === 'other_region');
+  // Delivery is either free or not priced yet, so it never adds to the sum here.
+  const total = itemsTotal;
   const itemCount = details.reduce((sum, i) => sum + i.qty, 0);
+
+  const phoneInvalid = phoneTouched && !isValidPhone(phone);
 
   const canSubmit =
     details.length > 0 &&
+    // Never submit an order that silently lacks some of the cart positions.
+    unresolved.length === 0 &&
     contactName.trim() !== '' &&
-    phone.trim() !== '' &&
-    (deliveryMethod === 'pickup' || address.trim() !== '') &&
+    isValidPhone(phone) &&
+    (deliveryMethod === 'pickup' || (deliveryZone !== '' && address.trim() !== '')) &&
     !submitting;
 
   const handleSubmit = async () => {
@@ -90,13 +99,14 @@ export default function CartPage() {
         rentalStart: dateStart,
         rentalEnd: dateEnd,
         deliveryMethod,
+        deliveryZone: deliveryMethod === 'delivery' && deliveryZone ? deliveryZone : undefined,
         address: deliveryMethod === 'delivery' ? address : undefined,
         contactName,
-        contactPhone: phone,
+        contactPhone: phone.trim(),
         comment,
         phoneToken: phoneToken || undefined,
       });
-      setConfirmedOrderId(order.publicId);
+      setConfirmedOrder(order);
       clearCart();
     } catch (err) {
       setSubmitError(err instanceof ApiError ? err.message : t.submitErrorGeneric);
@@ -105,7 +115,7 @@ export default function CartPage() {
     }
   };
 
-  if (confirmedOrderId) {
+  if (confirmedOrder) {
     return (
       <div className="container">
         <div className="panel" style={{ maxWidth: 560, margin: '60px auto', textAlign: 'center' }}>
@@ -125,7 +135,21 @@ export default function CartPage() {
             <IconCheckCircle size={26} />
           </div>
           <h2 style={{ marginBottom: 10 }}>{t.orderConfirmedTitle}</h2>
-          <p style={{ color: 'var(--ink-soft)', marginBottom: 20 }}>{t.orderConfirmedDesc(confirmedOrderId.slice(0, 8))}</p>
+          <p style={{ color: 'var(--ink-soft)', marginBottom: 20 }}>{t.orderConfirmedDesc(confirmedOrder.publicId.slice(0, 8))}</p>
+          <p style={{ marginBottom: 20 }}>
+            {t.orderTotalLabel}: <b>{money(confirmedOrder.total)}</b>
+            {confirmedOrder.deliveryCost === null && (
+              <>
+                <br />
+                {t.deliveryPending}. {t.orderPendingNote}
+              </>
+            )}
+          </p>
+          <p style={{ marginBottom: 20 }}>
+            <Link href={href(`/order/${confirmedOrder.publicId}`)} style={{ textDecoration: 'underline' }}>
+              {t.viewOrder}
+            </Link>
+          </p>
           <Link className="btn btn-primary" href={href('/')}>
             {t.backToCatalogBtn}
           </Link>
@@ -153,7 +177,7 @@ export default function CartPage() {
                 <span className="step-dot">1</span> {t.step1Title}
               </h3>
             </div>
-            {details.length === 0 ? (
+            {details.length === 0 && unresolved.length === 0 ? (
               <div className="empty-cart">
                 <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink)', marginBottom: 8 }}>{t.emptyTitle}</p>
                 <p style={{ fontSize: 14, marginBottom: 20 }}>{t.emptyDesc}</p>
@@ -192,6 +216,27 @@ export default function CartPage() {
                 </div>
               ))
             )}
+            {unresolved.map((item) => (
+              <div className="cart-item" key={item.id}>
+                <div className="cart-item-body">
+                  <div className="cart-item-top">
+                    <div className="cart-item-title">
+                      {item.state === 'loading' ? t.itemLoading : item.state === 'missing' ? t.itemMissing : t.itemLoadError}
+                    </div>
+                    <button className="remove-btn" aria-label={t.removeAria} type="button" onClick={() => removeFromCart(item.id)}>
+                      ✕
+                    </button>
+                  </div>
+                  {item.state === 'error' && (
+                    <div>
+                      <button type="button" className="btn btn-outline btn-sm" onClick={() => retryLoad(item.id)}>
+                        {t.itemRetry}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="panel">
@@ -237,12 +282,28 @@ export default function CartPage() {
             </div>
             <div className={`address-fields${deliveryMethod === 'delivery' ? ' is-visible' : ''}`}>
               <div className="field" style={{ marginTop: 18 }}>
+                <label htmlFor="delivery-zone">{t.zoneLabel}</label>
+                <select
+                  id="delivery-zone"
+                  className={styles.zoneSelect}
+                  value={deliveryZone}
+                  onChange={(e) => setDeliveryZone(e.target.value as DeliveryZone | '')}
+                >
+                  <option value="" disabled>
+                    {t.zonePlaceholder}
+                  </option>
+                  <option value="almaty">{t.zoneAlmaty}</option>
+                  <option value="almaty_region">{t.zoneAlmatyRegion}</option>
+                  <option value="other_region">{t.zoneOtherRegion}</option>
+                </select>
+              </div>
+              <div className="field">
                 <label>{t.addressLabel}</label>
                 <div className="input-with-icon">
                   <IconMapPin size={16} />
                   <input
                     type="text"
-                    placeholder={t.addressPlaceholder}
+                    placeholder={deliveryPending ? t.addressPlaceholderOutside : t.addressPlaceholder}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                   />
@@ -263,10 +324,15 @@ export default function CartPage() {
                 <input type="text" placeholder={t.contactNamePlaceholder} value={contactName} onChange={(e) => setContactName(e.target.value)} />
               </div>
               <div className="field">
-                <label>{t.phoneLabel}</label>
+                <label htmlFor="contact-phone">{t.phoneLabel}</label>
                 <div className="phone-verify-row">
                   <input
+                    id="contact-phone"
                     type="tel"
+                    required
+                    aria-invalid={phoneInvalid}
+                    aria-describedby="contact-phone-note"
+                    onBlur={() => setPhoneTouched(true)}
                     placeholder={t.phonePlaceholder}
                     value={phone}
                     onChange={(e) => {
@@ -274,19 +340,31 @@ export default function CartPage() {
                       setPhoneToken('');
                     }}
                   />
-                  <button
-                    type="button"
-                    className="btn btn-outline btn-sm"
-                    disabled={!!phoneToken || phone.trim() === ''}
-                    onClick={() => setModalOpen(true)}
-                  >
-                    {phoneToken ? t.verified : t.verifyBtn}
-                  </button>
+                  {PHONE_VERIFICATION_ENABLED && (
+                    <button
+                      type="button"
+                      className="btn btn-outline btn-sm"
+                      disabled={!!phoneToken || !isValidPhone(phone)}
+                      onClick={() => setModalOpen(true)}
+                    >
+                      {phoneToken ? t.verified : t.verifyBtn}
+                    </button>
+                  )}
                 </div>
-                <div className={`verify-status${phoneToken ? ' is-visible' : ''}`}>
-                  <IconCheckCircle size={15} />
-                  {t.phoneVerifiedNote}
+                <div id="contact-phone-note" style={{ fontSize: 13, marginTop: 10, color: 'var(--ink-soft)' }}>
+                  {phoneInvalid && (
+                    <div role="alert" style={{ color: 'var(--danger)', marginBottom: 4 }}>
+                      {t.phoneInvalid}
+                    </div>
+                  )}
+                  {!PHONE_VERIFICATION_ENABLED && t.phoneManagerNote}
                 </div>
+                {PHONE_VERIFICATION_ENABLED && (
+                  <div className={`verify-status${phoneToken ? ' is-visible' : ''}`}>
+                    <IconCheckCircle size={15} />
+                    {t.phoneVerifiedNote}
+                  </div>
+                )}
               </div>
             </div>
             <div className="field">
@@ -316,15 +394,18 @@ export default function CartPage() {
           </div>
           <div className="summary-row">
             <span>{t.deliveryCostLabel}</span>
-            <span>{deliveryCost ? money(deliveryCost) : t.free}</span>
+            <span className={styles.deliveryValue}>{zoneMissing ? t.zoneNotSelected : deliveryPending ? t.deliveryPending : t.free}</span>
           </div>
           <div className="summary-total">
-            <span>{t.total}</span>
+            <span>{deliveryPending ? t.totalWithoutDelivery : t.total}</span>
             <b>{money(total)}</b>
           </div>
           <div className="summary-note">
             <IconAlertTriangle size={16} />
-            <span>{t.noteText}</span>
+            <span>
+              {deliveryPending && <b>{t.deliveryPendingNote} </b>}
+              {t.noteText}
+            </span>
           </div>
           {submitError && (
             <p style={{ color: '#ff9d8a', fontSize: 13, marginTop: 14 }}>{submitError}</p>
@@ -345,12 +426,14 @@ export default function CartPage() {
         </aside>
       </div>
 
-      <PhoneVerifyModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onVerified={(token) => setPhoneToken(token)}
-        phone={phone}
-      />
+      {PHONE_VERIFICATION_ENABLED && (
+        <PhoneVerifyModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onVerified={(token) => setPhoneToken(token)}
+          phone={phone.trim()}
+        />
+      )}
     </div>
   );
 }

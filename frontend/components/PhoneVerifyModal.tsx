@@ -40,7 +40,7 @@ function ModalContent({
     setSending(true);
     try {
       const res = await sendPhoneCode(phone, ch);
-      setDebugCode(res.debugCode);
+      setDebugCode(res.debugCode ?? null);
       setSeconds(45);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t.errorSendGeneric);

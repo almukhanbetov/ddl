@@ -2,13 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { money } from '@/lib/data';
+import DeliveryCostForm from '@/components/admin/DeliveryCostForm';
 import { adminListOrders, adminUpdateOrderStatus, ApiError } from '@/lib/adminApi';
-import { Order } from '@/lib/api';
+import type { AdminOrder } from '@/lib/api';
 
 const STATUS_LABEL: Record<string, string> = {
   new: 'Новый',
   confirmed: 'Подтверждён',
   cancelled: 'Отменён',
+};
+
+const ZONE_LABEL: Record<string, string> = {
+  almaty: 'Город Алматы',
+  almaty_region: 'Алматинская область',
+  other_region: 'Другой регион Казахстана',
 };
 
 const TABS = [
@@ -19,10 +26,11 @@ const TABS = [
 ];
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState('');
+  const [statusError, setStatusError] = useState<{ publicId: string; message: string; needsCost: boolean } | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const load = (status: string) => {
@@ -41,11 +49,16 @@ export default function AdminOrdersPage() {
 
   const handleStatusChange = async (publicId: string, status: string) => {
     setUpdatingId(publicId);
+    setStatusError(null);
     try {
       const updated = await adminUpdateOrderStatus(publicId, status);
       setOrders((prev) => prev.map((o) => (o.publicId === publicId ? updated : o)));
     } catch (err) {
-      alert(err instanceof ApiError ? err.message : 'Не удалось обновить статус');
+      setStatusError({
+        publicId,
+        message: err instanceof ApiError ? err.message : 'Не удалось обновить статус',
+        needsCost: err instanceof ApiError && err.status === 409,
+      });
     } finally {
       setUpdatingId(null);
     }
@@ -94,8 +107,10 @@ export default function AdminOrdersPage() {
                   <td style={{ fontWeight: 600 }}>{o.contactName}</td>
                   <td>
                     {o.contactPhone}
-                    {o.phoneVerified && (
+                    {o.phoneVerified ? (
                       <span style={{ color: 'var(--success)', marginLeft: 6, fontSize: 12 }}>✓</span>
+                    ) : (
+                      <div style={{ fontSize: 12, color: 'var(--ink-soft)' }}>не проверен</div>
                     )}
                   </td>
                   <td>
@@ -104,6 +119,7 @@ export default function AdminOrdersPage() {
                   </td>
                   <td>
                     {o.deliveryMethod === 'delivery' ? 'Доставка' : 'Самовывоз'}
+                    {o.deliveryZone && <div style={{ fontSize: 12 }}>{ZONE_LABEL[o.deliveryZone]}</div>}
                     {o.address && <div style={{ fontSize: 12, color: 'var(--ink-soft)', maxWidth: 180 }}>{o.address}</div>}
                   </td>
                   <td>
@@ -113,7 +129,23 @@ export default function AdminOrdersPage() {
                       </div>
                     ))}
                   </td>
-                  <td style={{ fontWeight: 700 }}>{money(o.total)}</td>
+                  <td style={{ fontWeight: 700 }}>
+                    {money(o.total)}
+                    <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--ink-soft)' }}>
+                      {o.deliveryCost === null
+                        ? 'без доставки — уточнить стоимость'
+                        : `аренда ${money(o.itemsTotal)} + доставка ${money(o.deliveryCost)}`}
+                    </div>
+                    {(o.deliveryZone === 'almaty_region' || o.deliveryZone === 'other_region') && o.status !== 'cancelled' && (
+                      <DeliveryCostForm
+                        order={o}
+                        onSaved={(updated) => {
+                          setOrders((prev) => prev.map((x) => (x.publicId === updated.publicId ? updated : x)));
+                          setStatusError((prev) => (prev?.publicId === updated.publicId ? null : prev));
+                        }}
+                      />
+                    )}
+                  </td>
                   <td>
                     <select
                       className="admin-status-select"
@@ -127,6 +159,21 @@ export default function AdminOrdersPage() {
                         </option>
                       ))}
                     </select>
+                    {statusError?.publicId === o.publicId && (
+                      <div role="alert" style={{ fontSize: 12, color: 'var(--danger)', marginTop: 6, maxWidth: 200 }}>
+                        {statusError.message}
+                        {statusError.needsCost && (
+                          <button
+                            type="button"
+                            className="btn btn-outline btn-sm"
+                            style={{ padding: '6px 12px', fontSize: 12.5, marginTop: 6 }}
+                            onClick={() => document.getElementById(`delivery-cost-${o.publicId}`)?.focus()}
+                          >
+                            Ввести стоимость
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}

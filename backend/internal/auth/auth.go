@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"time"
 
@@ -23,6 +26,8 @@ type Claims struct {
 	UserID int64  `json:"userId"`
 	Email  string `json:"email"`
 	Role   string `json:"role"`
+	// Credential ties an admin session to the password it was opened with.
+	Credential string `json:"cred,omitempty"`
 	jwt.RegisteredClaims
 }
 
@@ -35,16 +40,34 @@ func CheckPassword(hash, password string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
 }
 
+// credential is a keyed fingerprint of the stored hash; it changes whenever the
+// hash does, however the password was changed, and doesn't reveal the hash.
+func credential(secret, passwordHash string) string {
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write([]byte("admin-session:" + passwordHash))
+	return hex.EncodeToString(mac.Sum(nil))
+}
+
+// IssueAdminToken opens a session that ends when the admin's password changes.
+func IssueAdminToken(secret string, userID int64, email, passwordHash string) (string, time.Time, error) {
+	return issue(secret, Claims{UserID: userID, Email: email, Role: RoleAdmin, Credential: credential(secret, passwordHash)})
+}
+
+// MatchesPassword reports whether the session was opened with the password
+// that is stored now. Tokens without a fingerprint never match.
+func (c *Claims) MatchesPassword(secret, passwordHash string) bool {
+	return hmac.Equal([]byte(c.Credential), []byte(credential(secret, passwordHash)))
+}
+
 func IssueToken(secret string, userID int64, email string, role string) (string, time.Time, error) {
+	return issue(secret, Claims{UserID: userID, Email: email, Role: role})
+}
+
+func issue(secret string, claims Claims) (string, time.Time, error) {
 	expiresAt := time.Now().Add(sessionTTL)
-	claims := Claims{
-		UserID: userID,
-		Email:  email,
-		Role:   role,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expiresAt),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-		},
+	claims.RegisteredClaims = jwt.RegisteredClaims{
+		ExpiresAt: jwt.NewNumericDate(expiresAt),
+		IssuedAt:  jwt.NewNumericDate(time.Now()),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signed, err := token.SignedString([]byte(secret))

@@ -31,6 +31,11 @@ func (h *Handler) CreateAdminUser(c *gin.Context) {
 		return
 	}
 
+	if h.production && auth.IsSeedPassword(req.Password) {
+		errJSON(c, http.StatusBadRequest, "этот пароль опубликован в репозитории, выберите другой")
+		return
+	}
+
 	if _, err := h.repo.GetAdminByEmail(c.Request.Context(), req.Email); err == nil {
 		errJSON(c, http.StatusConflict, "пользователь с таким email уже существует")
 		return

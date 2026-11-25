@@ -22,6 +22,9 @@ import (
 func main() {
 	_ = godotenv.Load()
 	cfg := config.Load()
+	if err := cfg.Validate(); err != nil {
+		log.Fatalf("config: %v", err)
+	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
@@ -43,7 +46,7 @@ func main() {
 	}
 
 	repo := repository.New(pool)
-	h := handlers.New(repo, cfg.DeliveryCost, cfg.JWTSecret, cfg.CookieSecure, cfg.UploadDir)
+	h := handlers.New(repo, cfg.JWTSecret, cfg.CookieSecure, cfg.UploadDir, cfg.Env == "production")
 	engine := router.New(h, cfg.CORSOrigins, cfg.UploadDir)
 
 	srv := &http.Server{

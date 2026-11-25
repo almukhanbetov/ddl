@@ -27,8 +27,7 @@ services:
       HTTP_PORT: 8082
       CORS_ORIGINS: ${CORS_ORIGINS}
       DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}?sslmode=disable
-      DELIVERY_COST: ${DELIVERY_COST}
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:?set it in .env}
       UPLOAD_DIR: /app/uploads
     volumes:
       - ddl_uploads:/app/uploads

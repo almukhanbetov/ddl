@@ -52,10 +52,8 @@ export default function AdminContentDeliveryPage() {
         </div>
 
         {[
-          ['courierTitle', 'courierDesc', 'Карточка «Доставка курьером»'],
-          ['pickupTitle', 'pickupDesc', 'Карточка «Самовывоз со склада»'],
-          ['paymentTitle', 'paymentDesc', 'Карточка «Оплата картой или наличными»'],
-          ['noPrepayTitle', 'noPrepayDesc', 'Карточка «Без предоплаты»'],
+          ['cityTitle', 'cityDesc', 'Карточка «Бесплатная доставка по Алматы»'],
+          ['outsideTitle', 'outsideDesc', 'Карточка «Доставка за пределы Алматы»'],
         ].map(([titleKey, descKey, label]) => (
           <div key={titleKey} style={{ borderTop: '1px dashed var(--border)', paddingTop: 16, marginTop: 16 }}>
             <label style={{ display: 'block', fontSize: 13, fontWeight: 700, marginBottom: 9 }}>{label}</label>
@@ -84,6 +82,13 @@ export default function AdminContentDeliveryPage() {
               type="text"
               value={content.deliveryPage.zonesTitle}
               onChange={(e) => setContent({ ...content, deliveryPage: { ...content.deliveryPage, zonesTitle: e.target.value } })}
+            />
+          </div>
+          <div className="field">
+            <label>Примечание перед тарифами</label>
+            <textarea
+              value={content.deliveryPage.zonesNote}
+              onChange={(e) => setContent({ ...content, deliveryPage: { ...content.deliveryPage, zonesNote: e.target.value } })}
             />
           </div>
           <label style={{ display: 'block', fontSize: 13, fontWeight: 700, marginBottom: 9 }}>Зоны и стоимость (6 строк)</label>

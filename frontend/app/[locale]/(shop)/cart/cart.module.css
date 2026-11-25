@@ -1,0 +1,7 @@
+/* Matches ".field input" from globals.css. */
+.zoneSelect{
+  width:100%; border:1.5px solid var(--border); background: var(--surface-2); color: var(--ink);
+  border-radius: var(--radius-md); padding: 13px 16px; font: inherit; font-size:14.5px; outline:none;
+}
+.zoneSelect:focus{ border-color: var(--accent); background: var(--surface); }
+.deliveryValue{ max-width: 60%; text-align:right; }

@@ -5,11 +5,12 @@ import { localeHref } from '@/lib/i18n/config';
 import { getSiteContent, resolveImageUrl } from '@/lib/api';
 import type { DeliveryPageContent } from '@/lib/data';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { IconTruck, IconHome, IconCreditCard, IconClock, IconAlertTriangle } from '@/components/Icons';
+import { IconTruck, IconMapPin, IconAlertTriangle } from '@/components/Icons';
+import styles from './delivery.module.css';
 
 export const metadata: Metadata = {
   title: 'Доставка и оплата',
-  description: 'Условия доставки и самовывоза, зоны и стоимость, способы оплаты аренды мебели, посуды и декора DDL.',
+  description: 'Бесплатная доставка по Алматы, зоны и стоимость доставки за пределы города — аренда мебели, посуды и декора DDL.',
 };
 
 export default async function DeliveryPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -40,26 +41,16 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
         />
       )}
 
-      <div className="steps" style={{ marginBottom: 56 }}>
-        <div className="step-card">
+      <div className={styles.cards}>
+        <div className={`step-card ${styles.accent}`}>
           <div className="step-num"><IconTruck size={20} /></div>
-          <h4>{c.courierTitle}</h4>
-          <p>{c.courierDesc}</p>
+          <h4>{c.cityTitle}</h4>
+          <p>{c.cityDesc}</p>
         </div>
         <div className="step-card">
-          <div className="step-num"><IconHome size={20} /></div>
-          <h4>{c.pickupTitle}</h4>
-          <p>{c.pickupDesc}</p>
-        </div>
-        <div className="step-card">
-          <div className="step-num"><IconCreditCard size={20} /></div>
-          <h4>{c.paymentTitle}</h4>
-          <p>{c.paymentDesc}</p>
-        </div>
-        <div className="step-card">
-          <div className="step-num"><IconClock size={20} /></div>
-          <h4>{c.noPrepayTitle}</h4>
-          <p>{c.noPrepayDesc}</p>
+          <div className="step-num"><IconMapPin size={20} /></div>
+          <h4>{c.outsideTitle}</h4>
+          <p>{c.outsideDesc}</p>
         </div>
       </div>
 
@@ -68,6 +59,7 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
           <div className="section-head" style={{ marginBottom: 22 }}>
             <div>
               <h2 style={{ fontSize: 26 }}>{c.zonesTitle}</h2>
+              <p>{c.zonesNote}</p>
             </div>
           </div>
           <div className="panel">

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -40,7 +41,14 @@ func (h *Handler) AdminLogin(c *gin.Context) {
 		return
 	}
 
-	token, expiresAt, err := auth.IssueToken(h.jwtSecret, user.ID, user.Email, auth.RoleAdmin)
+	// Same reply as for a wrong password, so it doesn't confirm the account.
+	if h.production && auth.IsSeedPassword(req.Password) {
+		log.Printf("admin login refused: account %d uses the password published in the repository", user.ID)
+		errJSON(c, http.StatusUnauthorized, "неверный email или пароль")
+		return
+	}
+
+	token, expiresAt, err := auth.IssueAdminToken(h.jwtSecret, user.ID, user.Email, user.PasswordHash)
 	if err != nil {
 		errJSON(c, http.StatusInternalServerError, "failed to issue session")
 		return
@@ -83,6 +91,20 @@ func (h *Handler) RequireAdmin(c *gin.Context) {
 	user, err := h.repo.GetAdminByID(c.Request.Context(), claims.UserID)
 	if err != nil {
 		errJSON(c, http.StatusUnauthorized, "пользователь не найден")
+		c.Abort()
+		return
+	}
+
+	// The password was changed after this session was opened.
+	if !claims.MatchesPassword(h.jwtSecret, user.PasswordHash) {
+		errJSON(c, http.StatusUnauthorized, "сессия истекла, войдите снова")
+		c.Abort()
+		return
+	}
+
+	// Sessions opened with the published password before it was refused.
+	if h.production && auth.IsSeedHash(user.PasswordHash) {
+		errJSON(c, http.StatusUnauthorized, "сессия истекла, войдите снова")
 		c.Abort()
 		return
 	}

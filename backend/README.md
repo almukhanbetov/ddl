@@ -45,11 +45,13 @@ internal/router             route table + CORS
 | GET    | `/api/products/:id`               | includes `gallery` + `related` |
 | POST   | `/api/phone/send`                 | `{phone, channel}` → mock code, see below |
 | POST   | `/api/phone/verify`               | `{phone, code}` → `{verified, token}` |
-| POST   | `/api/cart/quote`                 | live totals for the cart page, no side effects |
+| POST   | `/api/cart/quote`                 | live totals for the cart page, no side effects; `deliveryZone` (`almaty` / `almaty_region` / `other_region`) is required for delivery, `deliveryCost: null` means a manager confirms it |
 | POST   | `/api/orders`                     | validates stock, decrements it, persists the order atomically |
 | GET    | `/api/orders/:publicId`           | order lookup (confirmation screens) |
 
 ### Admin API (session-cookie auth)
+
+`PATCH /api/admin/orders/:publicId/delivery-cost` `{deliveryCost}` stores the agreed cost for an order outside Almaty and recomputes the total.
 
 | Method | Path                                    | Notes |
 | ------ | ---------------------------------------- | ----- |
@@ -68,7 +70,7 @@ internal/router             route table + CORS
 🔒 = requires the session cookie from `/api/admin/auth/login`, checked by the
 `RequireAdmin` middleware. Passwords are bcrypt-hashed (`internal/auth`).
 
-Seed admin account (see `0003_admin.up.sql`): **admin@ddl.ru / admin12345** —
+Seed admin account (see `0003_admin.up.sql`): **admin@ddl.ru**, development only: its password is refused when `APP_ENV=production` (see `deploy/README.md`) —
 change or remove this before any real deployment. The admin UI lives at
 `/admin` on the frontend.
 
@@ -76,8 +78,10 @@ change or remove this before any real deployment. The admin UI lives at
 
 There's no real Telegram/WhatsApp/SMS provider wired up. `POST /api/phone/send`
 generates a 4-digit code, stores it, and returns it as `debugCode` in the
-response so the flow is testable end-to-end without a real gateway. Swap
-`internal/handlers/phone.go` for a real provider call before shipping this to
+response so the flow is testable end-to-end without a real gateway. With
+`APP_ENV=production` both phone endpoints answer 503, no code is generated or
+logged, and orders are always saved with `phone_verified = false`. Swap
+`internal/handlers/phone.go` for a real provider call before enabling it in
 production, and drop `debugCode` from the response at that point.
 
 ### Pricing and stock are server-authoritative

@@ -106,15 +106,12 @@ type DeliveryPageContent struct {
 	Eyebrow        string     `json:"eyebrow"`
 	Heading        string     `json:"heading"`
 	Intro          string     `json:"intro"`
-	CourierTitle   string     `json:"courierTitle"`
-	CourierDesc    string     `json:"courierDesc"`
-	PickupTitle    string     `json:"pickupTitle"`
-	PickupDesc     string     `json:"pickupDesc"`
-	PaymentTitle   string     `json:"paymentTitle"`
-	PaymentDesc    string     `json:"paymentDesc"`
-	NoPrepayTitle  string     `json:"noPrepayTitle"`
-	NoPrepayDesc   string     `json:"noPrepayDesc"`
+	CityTitle      string     `json:"cityTitle"`
+	CityDesc       string     `json:"cityDesc"`
+	OutsideTitle   string     `json:"outsideTitle"`
+	OutsideDesc    string     `json:"outsideDesc"`
 	ZonesTitle     string     `json:"zonesTitle"`
+	ZonesNote      string     `json:"zonesNote"`
 	Zones          []PriceRow `json:"zones"`
 	ImportantTitle string     `json:"importantTitle"`
 	ImportantText  string     `json:"importantText"`
@@ -225,6 +222,39 @@ type OrderItem struct {
 	LineTotal   float64 `json:"lineTotal"`
 }
 
+// PublicOrder is what anyone holding the order link may see. It deliberately
+// has no contact data, address or comment; staff get those from the admin API.
+type PublicOrder struct {
+	PublicID       string      `json:"publicId"`
+	RentalStart    string      `json:"rentalStart"`
+	RentalEnd      string      `json:"rentalEnd"`
+	RentalDays     int         `json:"rentalDays"`
+	DeliveryMethod string      `json:"deliveryMethod"`
+	DeliveryZone   *string     `json:"deliveryZone"`
+	ItemsTotal     float64     `json:"itemsTotal"`
+	DeliveryCost   *float64    `json:"deliveryCost"` // nil: to be confirmed by a manager
+	Total          float64     `json:"total"`
+	Status         string      `json:"status"`
+	Items          []OrderItem `json:"items"`
+}
+
+func (o *Order) Public() PublicOrder {
+	return PublicOrder{
+		PublicID:       o.PublicID,
+		RentalStart:    o.RentalStart,
+		RentalEnd:      o.RentalEnd,
+		RentalDays:     o.RentalDays,
+		DeliveryMethod: o.DeliveryMethod,
+		DeliveryZone:   o.DeliveryZone,
+		ItemsTotal:     o.ItemsTotal,
+		DeliveryCost:   o.DeliveryCost,
+		Total:          o.Total,
+		Status:         o.Status,
+		Items:          o.Items,
+	}
+}
+
+// Order is the full record, for staff only.
 type Order struct {
 	ID             int64       `json:"id"`
 	PublicID       string      `json:"publicId"`
@@ -232,13 +262,14 @@ type Order struct {
 	RentalEnd      string      `json:"rentalEnd"`
 	RentalDays     int         `json:"rentalDays"`
 	DeliveryMethod string      `json:"deliveryMethod"`
+	DeliveryZone   *string     `json:"deliveryZone"`
 	Address        *string     `json:"address,omitempty"`
 	ContactName    string      `json:"contactName"`
 	ContactPhone   string      `json:"contactPhone"`
 	PhoneVerified  bool        `json:"phoneVerified"`
 	Comment        string      `json:"comment"`
 	ItemsTotal     float64     `json:"itemsTotal"`
-	DeliveryCost   float64     `json:"deliveryCost"`
+	DeliveryCost   *float64    `json:"deliveryCost"` // nil: to be confirmed by a manager
 	Total          float64     `json:"total"`
 	Status         string      `json:"status"`
 	CreatedAt      time.Time   `json:"createdAt"`

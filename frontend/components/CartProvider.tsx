@@ -1,15 +1,19 @@
 'use client';
 
-import { createContext, useContext, useEffect, useMemo, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState, ReactNode } from 'react';
 import { Product } from '@/lib/data';
-import { getProducts } from '@/lib/api';
+import { getProductDetail } from '@/lib/api';
 
 export type CartItem = { id: string; qty: number };
 export type CartDetail = CartItem & { product: Product };
+/** A position whose product isn't available to show: still loading, deleted, or failed to load. */
+export type CartUnresolved = CartItem & { state: 'loading' | 'missing' | 'error' };
 
 type CartContextValue = {
   items: CartItem[];
   details: CartDetail[];
+  unresolved: CartUnresolved[];
+  retryLoad: (id: string) => void;
   count: number;
   addToCart: (id: string, qty?: number) => void;
   setQty: (id: string, qty: number) => void;
@@ -25,6 +29,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [productsById, setProductsById] = useState<Record<string, Product>>({});
+  const [loadState, setLoadState] = useState<Record<string, 'missing' | 'error'>>({});
+  const inFlight = useRef(new Set<string>());
 
   useEffect(() => {
     try {
@@ -39,19 +45,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setHydrated(true);
   }, []);
 
+  // Load every cart position by its id, whatever category it belongs to.
   useEffect(() => {
-    // Catalog data now lives in the backend; cache it client-side once so the
-    // cart can merge item ids (stored in localStorage) with live product info.
-    getProducts({ category: 'dishes' })
-      .then(({ items: products }) => {
-        const map: Record<string, Product> = {};
-        for (const p of products) map[p.id] = p;
-        setProductsById(map);
-      })
-      .catch(() => {
-        // catalog fetch failing shouldn't crash the cart; it'll just show fewer details
-      });
-  }, []);
+    for (const { id } of items) {
+      if (productsById[id] || loadState[id] || inFlight.current.has(id)) continue;
+      inFlight.current.add(id);
+      getProductDetail(id)
+        .then((data) => {
+          if (!data) {
+            setLoadState((prev) => ({ ...prev, [id]: 'missing' }));
+            return;
+          }
+          const { product } = data;
+          setProductsById((prev) => ({ ...prev, [id]: product }));
+          // Quantities picked before the stock was known may exceed it.
+          setItems((prev) =>
+            prev.map((i) => (i.id === id ? { ...i, qty: Math.max(1, Math.min(i.qty, product.stock)) } : i))
+          );
+        })
+        .catch(() => setLoadState((prev) => ({ ...prev, [id]: 'error' })))
+        .finally(() => inFlight.current.delete(id));
+    }
+  }, [items, productsById, loadState]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -93,10 +108,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [items, productsById]
   );
 
+  const unresolved = useMemo(
+    () => items.filter((i) => !productsById[i.id]).map((i): CartUnresolved => ({ ...i, state: loadState[i.id] ?? 'loading' })),
+    [items, productsById, loadState]
+  );
+
+  const retryLoad = (id: string) => {
+    setLoadState((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  };
+
   const count = useMemo(() => items.reduce((sum, i) => sum + i.qty, 0), [items]);
 
   return (
-    <CartContext.Provider value={{ items, details, count, addToCart, setQty, removeFromCart, clearCart }}>
+    <CartContext.Provider value={{ items, details, unresolved, retryLoad, count, addToCart, setQty, removeFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );

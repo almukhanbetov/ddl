@@ -5,8 +5,8 @@ import { localeHref } from '@/lib/i18n/config';
 import CategoryCard from '@/components/CategoryCard';
 import ProductCard from '@/components/ProductCard';
 import HeroSearch from '@/components/HeroSearch';
-import WhatsAppRequest from '@/components/WhatsAppRequest';
-import { whatsappNumber } from '@/lib/whatsapp';
+import { IconWhatsApp } from '@/components/Icons';
+import { whatsappNumber, whatsappUrl } from '@/lib/whatsapp';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -19,6 +19,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     getSiteContent(locale),
   ]);
   const { hero, howItWorks, contacts } = content;
+  const waNumber = whatsappNumber(contacts.phone);
 
   return (
     <>
@@ -34,7 +35,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <p className="lead">{hero.lead}</p>
             <div className="hero-actions">
               <HeroSearch placeholder={hero.searchPlaceholder} />
-              <WhatsAppRequest number={whatsappNumber(contacts.phone)} />
+              {waNumber && (
+                <a
+                  className="btn hero-whatsapp"
+                  href={whatsappUrl(waNumber, dict.whatsapp.message)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <IconWhatsApp size={18} />
+                  {dict.whatsapp.button}
+                </a>
+              )}
             </div>
             <div className="hero-stats">
               {hero.stats.map((stat, i) => (

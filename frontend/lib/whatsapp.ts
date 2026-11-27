@@ -9,7 +9,7 @@ export function whatsappNumber(phone: string): string | null {
   return digits.length >= 10 && digits.length <= 15 ? digits : null;
 }
 
-/** encodeURIComponent keeps Cyrillic, line breaks and "+" intact through wa.me. */
+/** encodeURIComponent keeps Cyrillic and punctuation ("?", "!") intact through wa.me. */
 export function whatsappUrl(number: string, text: string): string {
   return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 }

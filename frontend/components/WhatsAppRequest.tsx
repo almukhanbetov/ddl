@@ -1,0 +1,149 @@
+'use client';
+
+import { useEffect, useRef, useState, type SubmitEvent } from 'react';
+import { createPortal } from 'react-dom';
+import { useLocale } from '@/lib/i18n/useLocale';
+import { getDictionary, type Dictionary } from '@/lib/i18n/dictionaries';
+import { isValidPhone } from '@/lib/phone';
+import { whatsappUrl } from '@/lib/whatsapp';
+import { IconClose, IconWhatsApp } from './Icons';
+
+type Field = 'name' | 'phone' | 'event';
+type Values = Record<Field, string>;
+const FIELDS: Field[] = ['name', 'phone', 'event'];
+
+function validate(values: Values, t: Dictionary['whatsappForm']): Partial<Record<Field, string>> {
+  const errors: Partial<Record<Field, string>> = {};
+  if (!values.name.trim()) errors.name = t.nameRequired;
+  if (!values.phone.trim()) errors.phone = t.phoneRequired;
+  else if (!isValidPhone(values.phone)) errors.phone = t.phoneInvalid;
+  if (!values.event.trim()) errors.event = t.eventRequired;
+  return errors;
+}
+
+/**
+ * Opens the given URL in a new tab, or in this one if pop-ups are blocked.
+ * Not a link: Google Tag Manager records link clicks with their URL, and this
+ * one carries the form's data. Nothing is pushed to dataLayer either.
+ */
+function openChat(url: string) {
+  const tab = window.open(url, '_blank');
+  if (tab) tab.opener = null;
+  else window.location.assign(url);
+}
+
+function RequestForm({ number, onClose, t }: { number: string; onClose: () => void; t: Dictionary['whatsappForm'] }) {
+  // Kept only in this component: the values go into the WhatsApp message and nowhere else.
+  const [values, setValues] = useState<Values>({ name: '', phone: '', event: '' });
+  const [submitted, setSubmitted] = useState(false);
+  const inputs = useRef<Partial<Record<Field, HTMLInputElement | null>>>({});
+  const errors = submitted ? validate(values, t) : {};
+
+  useEffect(() => {
+    inputs.current.name?.focus();
+  }, []);
+
+  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitted(true);
+    const found = validate(values, t);
+    const firstInvalid = FIELDS.find((f) => found[f]);
+    if (firstInvalid) {
+      inputs.current[firstInvalid]?.focus();
+      return;
+    }
+    const text = t.message({ name: values.name.trim(), phone: values.phone.trim(), event: values.event.trim() });
+    openChat(whatsappUrl(number, text));
+    onClose();
+  };
+
+  const field = (name: Field, label: string, props: { type: string; autoComplete: string; placeholder: string; maxLength: number }) => (
+    <div className="field">
+      <label htmlFor={`wa-${name}`}>{label}</label>
+      <input
+        id={`wa-${name}`}
+        ref={(el) => {
+          inputs.current[name] = el;
+        }}
+        {...props}
+        required
+        value={values[name]}
+        aria-invalid={Boolean(errors[name])}
+        aria-describedby={errors[name] ? `wa-${name}-error` : undefined}
+        onChange={(e) => setValues((v) => ({ ...v, [name]: e.target.value }))}
+      />
+      {errors[name] && (
+        <p className="field-error" id={`wa-${name}-error`}>
+          {errors[name]}
+        </p>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="modal" role="dialog" aria-modal="true" aria-labelledby="waTitle">
+      <div className="modal-head">
+        <h3 id="waTitle">{t.title}</h3>
+        <button className="modal-close" onClick={onClose} aria-label={t.closeAria} type="button">
+          <IconClose />
+        </button>
+      </div>
+      <p className="modal-sub">{t.subtitle}</p>
+      <form onSubmit={handleSubmit} noValidate>
+        {field('name', t.nameLabel, { type: 'text', autoComplete: 'name', placeholder: t.namePlaceholder, maxLength: 80 })}
+        {field('phone', t.phoneLabel, { type: 'tel', autoComplete: 'tel', placeholder: '+7 (___) ___-__-__', maxLength: 25 })}
+        {field('event', t.eventLabel, { type: 'text', autoComplete: 'off', placeholder: t.eventPlaceholder, maxLength: 120 })}
+        <p className="wa-note">{t.privacyNote}</p>
+        <button type="submit" className="btn btn-primary btn-block">
+          <IconWhatsApp size={17} />
+          {t.submit}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+/** "Write on WhatsApp" next to the hero search; renders nothing without a usable number. */
+export default function WhatsAppRequest({ number }: { number: string | null }) {
+  const t = getDictionary(useLocale()).whatsappForm;
+  const [open, setOpen] = useState(false);
+  const trigger = useRef<HTMLButtonElement>(null);
+
+  const close = () => {
+    setOpen(false);
+    trigger.current?.focus();
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        trigger.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
+
+  if (!number) return null;
+
+  return (
+    <>
+      <button ref={trigger} type="button" className="btn hero-whatsapp" aria-haspopup="dialog" onClick={() => setOpen(true)}>
+        <IconWhatsApp size={18} />
+        {t.openButton}
+      </button>
+      {/* Rendered into <body>: inside the hero it would inherit the white text and
+          sit below the sticky header. Mounted only while open, so the form starts
+          empty every time and nothing is rendered on the server. */}
+      {open &&
+        createPortal(
+          <div className="modal-overlay is-open" onClick={(e) => e.target === e.currentTarget && close()}>
+            <RequestForm number={number} onClose={close} t={t} />
+          </div>,
+          document.body
+        )}
+    </>
+  );
+}

@@ -127,10 +127,20 @@ function RequestForm({ number, onClose, t }: { number: string; onClose: () => vo
 }
 
 /**
- * "Write on WhatsApp": the gold button next to the hero search, or the round
- * icon in the top bar. Renders nothing without a usable number.
+ * "Write on WhatsApp": the gold button next to the hero search, the round icon
+ * in the top bar, or the gold button beside a form's own submit button
+ * ("inline"). Renders nothing without a usable number.
  */
-export default function WhatsAppRequest({ number, variant = 'hero' }: { number: string | null; variant?: 'hero' | 'icon' }) {
+export default function WhatsAppRequest({
+  number,
+  variant = 'hero',
+  label,
+}: {
+  number: string | null;
+  variant?: 'hero' | 'icon' | 'inline';
+  /** Button text instead of the default "Write on WhatsApp". */
+  label?: string;
+}) {
   const t = getDictionary(useLocale()).whatsappForm;
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -169,9 +179,15 @@ export default function WhatsAppRequest({ number, variant = 'hero' }: { number: 
           <IconWhatsApp />
         </button>
       ) : (
-        <button ref={trigger} type="button" className="btn hero-whatsapp" aria-haspopup="dialog" onClick={() => setOpen(true)}>
-          <IconWhatsApp size={18} />
-          {t.openButton}
+        <button
+          ref={trigger}
+          type="button"
+          className={variant === 'inline' ? 'btn btn-whatsapp' : 'btn hero-whatsapp'}
+          aria-haspopup="dialog"
+          onClick={() => setOpen(true)}
+        >
+          <IconWhatsApp size={variant === 'inline' ? 16 : 18} />
+          {label ?? t.openButton}
         </button>
       )}
       {/* Rendered into <body>: inside the hero or the top bar it would inherit the
@@ -179,7 +195,13 @@ export default function WhatsAppRequest({ number, variant = 'hero' }: { number: 
           empty every time and nothing is rendered on the server. */}
       {open &&
         createPortal(
-          <div className="modal-overlay is-open" onClick={(e) => e.target === e.currentTarget && close()}>
+          // React passes events from a portal up its own component tree, so a
+          // submit here would also reach a form the button sits in. Stop it here.
+          <div
+            className="modal-overlay is-open"
+            onClick={(e) => e.target === e.currentTarget && close()}
+            onSubmit={(e) => e.stopPropagation()}
+          >
             <RequestForm number={number} onClose={close} t={t} />
           </div>,
           document.body

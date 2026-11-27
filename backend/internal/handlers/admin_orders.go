@@ -74,7 +74,7 @@ func (h *Handler) AdminUpdateDeliveryCost(c *gin.Context) {
 	if err != nil {
 		switch {
 		case errors.Is(err, repository.ErrDeliveryCostLocked):
-			errJSON(c, http.StatusConflict, "стоимость доставки можно указать только для действующего заказа за пределы Алматы")
+			errJSON(c, http.StatusConflict, "стоимость доставки можно указать только для действующего заказа за пределы Алматы, у которого её ещё нет")
 		case errors.Is(err, pgx.ErrNoRows):
 			errJSON(c, http.StatusNotFound, "заказ не найден")
 		default:

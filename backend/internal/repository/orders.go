@@ -236,15 +236,17 @@ func (r *Repository) UpdateOrderStatus(ctx context.Context, publicID, status str
 
 var ErrDeliveryCostLocked = errors.New("delivery cost can't be changed for this order")
 
-// SetAgreedDeliveryCost stores the cost agreed with the customer and recomputes
-// the total from items_total, so saving again replaces the cost instead of
-// adding to it. Only active orders outside Almaty qualify.
+// SetAgreedDeliveryCost stores the cost agreed with the customer for an order
+// placed before the flat tariff, and recomputes the total from items_total.
+// Only active orders outside Almaty that still have no delivery cost qualify:
+// newer orders carry the tariff the customer saw in the cart.
 func (r *Repository) SetAgreedDeliveryCost(ctx context.Context, publicID string, cost float64) (*models.Order, error) {
 	tag, err := r.pool.Exec(ctx, `
 		UPDATE orders SET delivery_cost = $2, total = items_total + $2
 		WHERE public_id::text = $1
 		  AND delivery_method = 'delivery'
 		  AND delivery_zone IN ('almaty_region', 'other_region')
+		  AND delivery_cost IS NULL
 		  AND status <> 'cancelled'
 	`, publicID, cost)
 	if err != nil {

@@ -136,7 +136,8 @@ export default function AdminOrdersPage() {
                         ? 'без доставки — уточнить стоимость'
                         : `аренда ${money(o.itemsTotal)} + доставка ${money(o.deliveryCost)}`}
                     </div>
-                    {(o.deliveryZone === 'almaty_region' || o.deliveryZone === 'other_region') && o.status !== 'cancelled' && (
+                    {/* Only orders placed before the flat tariff can lack a delivery cost. */}
+                    {(o.deliveryZone === 'almaty_region' || o.deliveryZone === 'other_region') && o.deliveryCost === null && o.status !== 'cancelled' && (
                       <DeliveryCostForm
                         order={o}
                         onSaved={(updated) => {

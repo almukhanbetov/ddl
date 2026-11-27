@@ -4,7 +4,7 @@ import { useState, type SubmitEvent } from 'react';
 import type { AdminOrder } from '@/lib/api';
 import { adminUpdateDeliveryCost, ApiError } from '@/lib/adminApi';
 
-/** Lets a manager store the delivery cost agreed for an order outside Almaty. */
+/** Lets a manager store the delivery cost agreed for an older order outside Almaty that has none. */
 export default function DeliveryCostForm({ order, onSaved }: { order: AdminOrder; onSaved: (order: AdminOrder) => void }) {
   const [value, setValue] = useState(order.deliveryCost === null ? '' : String(order.deliveryCost));
   const [saving, setSaving] = useState(false);

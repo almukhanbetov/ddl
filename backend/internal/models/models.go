@@ -102,22 +102,19 @@ type PriceRow struct {
 }
 
 type DeliveryPageContent struct {
-	Photo          string     `json:"photo"`
-	Eyebrow        string     `json:"eyebrow"`
-	Heading        string     `json:"heading"`
-	Intro          string     `json:"intro"`
-	CityTitle      string     `json:"cityTitle"`
-	CityDesc       string     `json:"cityDesc"`
-	OutsideTitle   string     `json:"outsideTitle"`
-	OutsideDesc    string     `json:"outsideDesc"`
-	ZonesTitle     string     `json:"zonesTitle"`
-	ZonesNote      string     `json:"zonesNote"`
-	Zones          []PriceRow `json:"zones"`
-	ImportantTitle string     `json:"importantTitle"`
-	ImportantText  string     `json:"importantText"`
-	QuestionsTitle string     `json:"questionsTitle"`
-	QuestionsDesc  string     `json:"questionsDesc"`
-	ContactUs      string     `json:"contactUs"`
+	Photo          string `json:"photo"`
+	Eyebrow        string `json:"eyebrow"`
+	Heading        string `json:"heading"`
+	Intro          string `json:"intro"`
+	CityTitle      string `json:"cityTitle"`
+	CityDesc       string `json:"cityDesc"`
+	OutsideTitle   string `json:"outsideTitle"`
+	OutsideDesc    string `json:"outsideDesc"`
+	ImportantTitle string `json:"importantTitle"`
+	ImportantText  string `json:"importantText"`
+	QuestionsTitle string `json:"questionsTitle"`
+	QuestionsDesc  string `json:"questionsDesc"`
+	ContactUs      string `json:"contactUs"`
 }
 
 type AboutPageContent struct {

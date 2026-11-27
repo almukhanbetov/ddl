@@ -294,6 +294,7 @@ const kk: typeof ru = {
       message: 'Хабарлама',
       messagePlaceholder: 'Іс-шара туралы айтыңыз — күні, қонақтар саны және не таңдау керектігі',
       submit: 'Хабарлама жіберу',
+      whatsapp: 'WhatsApp арқылы жазу',
     },
   },
   reviews: {

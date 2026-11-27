@@ -5,6 +5,7 @@ import type { ContactsPageContent } from '@/lib/data';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ContactForm from '@/components/ContactForm';
 import { IconMapPin, IconAlertTriangle, IconTelegram, IconWhatsApp } from '@/components/Icons';
+import { whatsappNumber } from '@/lib/whatsapp';
 
 export const metadata: Metadata = {
   title: 'Контакты',
@@ -37,7 +38,7 @@ export default async function ContactsPage({ params }: { params: Promise<{ local
             <div className="panel-head">
               <h3>{t.writeToUs}</h3>
             </div>
-            <ContactForm />
+            <ContactForm whatsappNumber={whatsappNumber(contacts.phone)} />
           </div>
 
           <div className="panel" style={{ padding: 0, overflow: 'hidden' }}>

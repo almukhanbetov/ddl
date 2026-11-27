@@ -298,6 +298,7 @@ const ru = {
       message: 'Сообщение',
       messagePlaceholder: 'Расскажите о мероприятии — дате, количестве гостей и что нужно подобрать',
       submit: 'Отправить сообщение',
+      whatsapp: 'Написать в WhatsApp',
     },
   },
   reviews: {

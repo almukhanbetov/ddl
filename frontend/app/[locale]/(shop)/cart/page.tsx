@@ -7,6 +7,7 @@ import { useCart } from '@/components/CartProvider';
 import { money } from '@/lib/data';
 import { createOrder, ApiError, resolveImageUrl, type DeliveryZone, type Order } from '@/lib/api';
 import { isValidPhone, PHONE_VERIFICATION_ENABLED } from '@/lib/phone';
+import { deliveryCost } from '@/lib/delivery';
 import { useLocale } from '@/lib/i18n/useLocale';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { localeHref } from '@/lib/i18n/config';
@@ -72,11 +73,11 @@ export default function CartPage() {
     () => details.reduce((sum, i) => sum + i.product.priceDay * i.qty * days, 0),
     [details, days]
   );
-  // Display only: the backend applies the same rules and stores its own result.
-  const zoneMissing = deliveryMethod === 'delivery' && deliveryZone === '';
-  const deliveryPending = deliveryMethod === 'delivery' && (deliveryZone === 'almaty_region' || deliveryZone === 'other_region');
-  // Delivery is either free or not priced yet, so it never adds to the sum here.
-  const total = itemsTotal;
+  // Display only: the backend applies the same tariff and stores its own result.
+  const delivery = deliveryCost(deliveryMethod, deliveryZone);
+  const zoneMissing = delivery === null;
+  const outsideAlmaty = deliveryMethod === 'delivery' && (deliveryZone === 'almaty_region' || deliveryZone === 'other_region');
+  const total = itemsTotal + (delivery ?? 0);
   const itemCount = details.reduce((sum, i) => sum + i.qty, 0);
 
   const phoneInvalid = phoneTouched && !isValidPhone(phone);
@@ -303,7 +304,7 @@ export default function CartPage() {
                   <IconMapPin size={16} />
                   <input
                     type="text"
-                    placeholder={deliveryPending ? t.addressPlaceholderOutside : t.addressPlaceholder}
+                    placeholder={outsideAlmaty ? t.addressPlaceholderOutside : t.addressPlaceholder}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                   />
@@ -394,16 +395,15 @@ export default function CartPage() {
           </div>
           <div className="summary-row">
             <span>{t.deliveryCostLabel}</span>
-            <span className={styles.deliveryValue}>{zoneMissing ? t.zoneNotSelected : deliveryPending ? t.deliveryPending : t.free}</span>
+            <span className={styles.deliveryValue}>{delivery === null ? t.zoneNotSelected : delivery === 0 ? t.free : money(delivery)}</span>
           </div>
           <div className="summary-total">
-            <span>{deliveryPending ? t.totalWithoutDelivery : t.total}</span>
+            <span>{zoneMissing ? t.totalWithoutDelivery : t.total}</span>
             <b>{money(total)}</b>
           </div>
           <div className="summary-note">
             <IconAlertTriangle size={16} />
             <span>
-              {deliveryPending && <b>{t.deliveryPendingNote} </b>}
               {t.noteText}
             </span>
           </div>

@@ -79,9 +79,6 @@ export type DeliveryPageContent = {
   cityDesc: string;
   outsideTitle: string;
   outsideDesc: string;
-  zonesTitle: string;
-  zonesNote: string;
-  zones: PriceRow[];
   importantTitle: string;
   importantText: string;
   questionsTitle: string;

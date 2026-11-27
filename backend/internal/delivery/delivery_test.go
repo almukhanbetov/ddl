@@ -9,18 +9,18 @@ func TestResolve(t *testing.T) {
 	cases := []struct {
 		name, method, zone string
 		wantZone           string
-		pending            bool
+		wantCost           float64
 		wantErr            error
 	}{
-		{"almaty city", "delivery", "almaty", "almaty", false, nil},
-		{"almaty region", "delivery", "almaty_region", "almaty_region", true, nil},
-		{"other region", "delivery", "other_region", "other_region", true, nil},
-		{"pickup", "pickup", "", "", false, nil},
-		{"pickup ignores zone", "pickup", "other_region", "", false, nil},
-		{"zone missing", "delivery", "", "", false, ErrInvalidZone},
-		{"free text is not a zone", "delivery", "Алматы", "", false, ErrInvalidZone},
-		{"region name is not a zone", "delivery", "Алматинская область", "", false, ErrInvalidZone},
-		{"unknown method", "courier", "almaty", "", false, ErrInvalidMethod},
+		{"almaty city", "delivery", "almaty", "almaty", 0, nil},
+		{"almaty region", "delivery", "almaty_region", "almaty_region", 30_000, nil},
+		{"other region", "delivery", "other_region", "other_region", 30_000, nil},
+		{"pickup", "pickup", "", "", 0, nil},
+		{"pickup ignores zone", "pickup", "other_region", "", 0, nil},
+		{"zone missing", "delivery", "", "", 0, ErrInvalidZone},
+		{"free text is not a zone", "delivery", "Алматы", "", 0, ErrInvalidZone},
+		{"region name is not a zone", "delivery", "Алматинская область", "", 0, ErrInvalidZone},
+		{"unknown method", "courier", "almaty", "", 0, ErrInvalidMethod},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -38,16 +38,24 @@ func TestResolve(t *testing.T) {
 			if zone != tc.wantZone {
 				t.Errorf("zone = %q, want %q", zone, tc.wantZone)
 			}
-			if (q.Cost == nil) != tc.pending {
-				t.Errorf("pending = %v, want %v", q.Cost == nil, tc.pending)
+			if q.Cost == nil {
+				t.Fatalf("cost = nil, want %v", tc.wantCost)
 			}
-			if q.Cost != nil && *q.Cost != 0 {
-				t.Errorf("cost = %v, want 0", *q.Cost)
+			if *q.Cost != tc.wantCost {
+				t.Errorf("cost = %v, want %v", *q.Cost, tc.wantCost)
 			}
-			if got := q.Total(1000); got != 1000 {
-				t.Errorf("total = %v, want 1000", got)
+			// The example from the tariff: 50 000 ₸ of rental.
+			if got, want := q.Total(50_000), 50_000+tc.wantCost; got != want {
+				t.Errorf("total = %v, want %v", got, want)
 			}
 		})
+	}
+}
+
+func TestTotalWithoutCost(t *testing.T) {
+	// Orders from before the flat tariff may still have no delivery cost.
+	if got := (Quote{}).Total(50_000); got != 50_000 {
+		t.Errorf("total = %v, want 50000", got)
 	}
 }
 

@@ -76,53 +76,6 @@ export default function AdminContentDeliveryPage() {
         ))}
 
         <div style={{ borderTop: '1px dashed var(--border)', paddingTop: 16, marginTop: 16 }}>
-          <div className="field">
-            <label>Заголовок таблицы зон доставки</label>
-            <input
-              type="text"
-              value={content.deliveryPage.zonesTitle}
-              onChange={(e) => setContent({ ...content, deliveryPage: { ...content.deliveryPage, zonesTitle: e.target.value } })}
-            />
-          </div>
-          <div className="field">
-            <label>Примечание перед тарифами</label>
-            <textarea
-              value={content.deliveryPage.zonesNote}
-              onChange={(e) => setContent({ ...content, deliveryPage: { ...content.deliveryPage, zonesNote: e.target.value } })}
-            />
-          </div>
-          <label style={{ display: 'block', fontSize: 13, fontWeight: 700, marginBottom: 9 }}>Зоны и стоимость (6 строк)</label>
-          {content.deliveryPage.zones.map((zone, i) => (
-            <div className="field-row" key={i}>
-              <div className="field">
-                <input
-                  type="text"
-                  placeholder="Название зоны"
-                  value={zone.label}
-                  onChange={(e) => {
-                    const zones = [...content.deliveryPage.zones];
-                    zones[i] = { ...zones[i], label: e.target.value };
-                    setContent({ ...content, deliveryPage: { ...content.deliveryPage, zones } });
-                  }}
-                />
-              </div>
-              <div className="field">
-                <input
-                  type="text"
-                  placeholder="Стоимость"
-                  value={zone.price}
-                  onChange={(e) => {
-                    const zones = [...content.deliveryPage.zones];
-                    zones[i] = { ...zones[i], price: e.target.value };
-                    setContent({ ...content, deliveryPage: { ...content.deliveryPage, zones } });
-                  }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div style={{ borderTop: '1px dashed var(--border)', paddingTop: 16, marginTop: 16 }}>
           <div className="field-row">
             <div className="field">
               <label>Заголовок блока «Важно»</label>

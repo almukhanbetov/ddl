@@ -370,6 +370,25 @@ const kk: typeof ru = {
     notLoggedIn: 'Сіз аккаунтқа кірмегенсіз.',
     logout: 'Шығу',
   },
+  whatsappForm: {
+    openButton: 'WhatsApp-қа жазу',
+    title: 'WhatsApp арқылы сұрау',
+    subtitle: 'Өрістерді толтырыңыз — WhatsApp дайын хабарламамен ашылады. Оны өзіңіз жібересіз.',
+    nameLabel: 'Аты',
+    namePlaceholder: 'Сізге қалай жүгінейік',
+    phoneLabel: 'Телефон нөмірі',
+    eventLabel: 'Іс-шараның атауы',
+    eventPlaceholder: 'Мысалы: үйлену тойы, мерейтой, бітіру кеші',
+    nameRequired: 'Атыңызды көрсетіңіз',
+    phoneRequired: 'Телефон нөмірін көрсетіңіз',
+    phoneInvalid: 'Нөмірді +7 (XXX) XXX-XX-XX форматында көрсетіңіз',
+    eventRequired: 'Іс-шараның атауын көрсетіңіз',
+    privacyNote: 'Деректер тек WhatsApp хабарламасына енеді, сайт оларды сақтамайды.',
+    submit: 'WhatsApp-ты ашу',
+    closeAria: 'Жабу',
+    message: ({ name, phone, event }: { name: string; phone: string; event: string }) =>
+      `Сәлеметсіз бе! Іс-шараға арналған жиһаз бен декорды жалдау құнын білгім келеді.\n\nАты: ${name}\nТелефон: ${phone}\nІс-шара: ${event}`,
+  },
 };
 
 export default kk;

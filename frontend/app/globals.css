@@ -318,7 +318,7 @@ svg{ display: block; flex-shrink: 0; }
   background: rgba(255,255,255,.97); border-radius: var(--radius-full);
   padding: 8px 8px 8px 24px; box-shadow: var(--shadow-lg);
 }
-.hero-search input{ flex:1; border:none; outline:none; font-size:15px; background:transparent; color: var(--ink); }
+.hero-search input{ flex:1; min-width:0; border:none; outline:none; font-size:15px; background:transparent; color: var(--ink); }
 .hero-search input::placeholder{ color: var(--ink-faint); }
 .hero-search button{
   border:none; background: var(--accent); color:#fff; border-radius: var(--radius-full);
@@ -326,6 +326,19 @@ svg{ display: block; flex-shrink: 0; }
   transition: background .15s;
 }
 .hero-search button:hover{ background: var(--accent-dark); }
+.hero-actions{ margin-top: 34px; display:flex; align-items:center; gap: 14px; max-width: 900px; }
+.hero-actions .hero-search{ margin-top:0; flex: 1 1 auto; min-width:0; }
+/* Gold of the headline accent (h1 em), dark green text; the hero is dark in both themes. */
+.hero-whatsapp{
+  flex-shrink:0; padding: 18px 26px;
+  background: var(--gold-on-dark); color: var(--band);
+  border: 1.5px solid transparent; box-shadow: var(--shadow-sm);
+}
+.hero-whatsapp:hover{ background: color-mix(in srgb, var(--gold-on-dark) 78%, #fff); box-shadow: var(--shadow-md); }
+.hero-whatsapp:focus-visible{ outline: 3px solid #fff; outline-offset: 3px; }
+.field-error{ color: var(--danger); font-size:13px; margin-top:7px; }
+.field input[aria-invalid="true"]{ border-color: var(--danger); }
+.wa-note{ color: var(--ink-soft); font-size:12.5px; margin: 4px 0 16px; }
 .hero-stats{ display:flex; gap: clamp(24px,4vw,56px); margin-top: 46px; flex-wrap:wrap; }
 .hero-stats div b{ display:block; font-family: var(--font-display); font-size: 28px; color:#fff; }
 .hero-stats div span{ font-size: 13px; color: rgba(255,255,255,.65); }
@@ -713,6 +726,7 @@ svg{ display: block; flex-shrink: 0; }
   .cat-grid{ grid-template-columns: 1fr; }
   .product-grid{ grid-template-columns: repeat(2,1fr); gap:14px; }
   .hero-stats{ gap:28px; }
+  .hero-actions{ flex-direction:column; align-items:stretch; }
   .footer-top{ grid-template-columns: 1fr; padding-block:44px; }
   .gallery-thumbs{ grid-template-columns: repeat(4,1fr); }
 }

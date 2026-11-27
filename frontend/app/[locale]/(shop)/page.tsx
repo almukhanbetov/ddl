@@ -5,6 +5,8 @@ import { localeHref } from '@/lib/i18n/config';
 import CategoryCard from '@/components/CategoryCard';
 import ProductCard from '@/components/ProductCard';
 import HeroSearch from '@/components/HeroSearch';
+import WhatsAppRequest from '@/components/WhatsAppRequest';
+import { whatsappNumber } from '@/lib/whatsapp';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -16,7 +18,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     getProducts({ category: 'dishes', limit: 4 }).then((r) => r.items),
     getSiteContent(locale),
   ]);
-  const { hero, howItWorks } = content;
+  const { hero, howItWorks, contacts } = content;
 
   return (
     <>
@@ -30,7 +32,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               {hero.titleBefore} <em>{hero.titleAccent}</em> {hero.titleAfter}
             </h1>
             <p className="lead">{hero.lead}</p>
-            <HeroSearch placeholder={hero.searchPlaceholder} />
+            <div className="hero-actions">
+              <HeroSearch placeholder={hero.searchPlaceholder} />
+              <WhatsAppRequest number={whatsappNumber(contacts.phone)} />
+            </div>
             <div className="hero-stats">
               {hero.stats.map((stat, i) => (
                 <div key={i}>

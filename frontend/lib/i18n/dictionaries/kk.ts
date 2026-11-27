@@ -370,9 +370,24 @@ const kk: typeof ru = {
     notLoggedIn: 'Сіз аккаунтқа кірмегенсіз.',
     logout: 'Шығу',
   },
-  whatsapp: {
-    button: 'WhatsApp-қа жазу',
-    message: 'Сәлеметсіз бе! Іс-шараға жиһаз бен декорды жалға алу құны қанша екенін айта аласыз ба?',
+  whatsappForm: {
+    openButton: 'WhatsApp-қа жазу',
+    title: 'WhatsApp арқылы сұрау',
+    subtitle: 'Өрістерді толтырыңыз — WhatsApp дайын хабарламамен ашылады. Оны өзіңіз жібересіз, ал біз кері қоңырау шаламыз.',
+    nameLabel: 'Аты',
+    namePlaceholder: 'Сізге қалай жүгінейік',
+    phoneLabel: 'Кері қоңырауға арналған нөмір',
+    eventLabel: 'Іс-шараның атауы',
+    eventPlaceholder: 'Мысалы: үйлену тойы, мерейтой, бітіру кеші',
+    nameRequired: 'Атыңызды көрсетіңіз',
+    phoneRequired: 'Кері қоңырауға арналған нөмірді көрсетіңіз',
+    phoneInvalid: 'Нөмірді +7 (XXX) XXX-XX-XX форматында көрсетіңіз',
+    eventRequired: 'Іс-шараның атауын көрсетіңіз',
+    privacyNote: 'Деректер тек WhatsApp хабарламасына енеді, сайт оларды сақтамайды.',
+    submit: 'WhatsApp-ты ашу',
+    closeAria: 'Жабу',
+    message: ({ name, phone, event }: { name: string; phone: string; event: string }) =>
+      `Сәлеметсіз бе! Іс-шараға арналған жиһаз бен декорды жалдау құнын білгім келеді. Маған кері қоңырау шалыңызшы.\n\nАты: ${name}\nКері қоңырауға арналған нөмір: ${phone}\nІс-шара: ${event}`,
   },
 };
 

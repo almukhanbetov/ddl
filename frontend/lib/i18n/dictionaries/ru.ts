@@ -374,9 +374,24 @@ const ru = {
     notLoggedIn: 'Вы не вошли в аккаунт.',
     logout: 'Выйти',
   },
-  whatsapp: {
-    button: 'Написать в WhatsApp',
-    message: 'Здравствуйте! Подскажите, пожалуйста, сколько стоит аренда мебели и декора для мероприятия?',
+  whatsappForm: {
+    openButton: 'Написать в WhatsApp',
+    title: 'Запрос в WhatsApp',
+    subtitle: 'Заполните поля — откроется WhatsApp с готовым сообщением. Отправите его вы сами, а мы перезвоним.',
+    nameLabel: 'Имя',
+    namePlaceholder: 'Как к вам обращаться',
+    phoneLabel: 'Номер для обратного звонка',
+    eventLabel: 'Название мероприятия',
+    eventPlaceholder: 'Например: свадьба, юбилей, выпускной',
+    nameRequired: 'Укажите имя',
+    phoneRequired: 'Укажите номер для обратного звонка',
+    phoneInvalid: 'Укажите номер в формате +7 (XXX) XXX-XX-XX',
+    eventRequired: 'Укажите название мероприятия',
+    privacyNote: 'Данные попадут только в сообщение WhatsApp, сайт их не сохраняет.',
+    submit: 'Открыть WhatsApp',
+    closeAria: 'Закрыть',
+    message: ({ name, phone, event }: { name: string; phone: string; event: string }) =>
+      `Здравствуйте! Хочу узнать стоимость аренды мебели и декора для мероприятия. Пожалуйста, перезвоните мне.\n\nИмя: ${name}\nНомер для обратного звонка: ${phone}\nМероприятие: ${event}`,
   },
 };
 

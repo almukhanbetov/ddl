@@ -126,8 +126,11 @@ function RequestForm({ number, onClose, t }: { number: string; onClose: () => vo
   );
 }
 
-/** "Write on WhatsApp" next to the hero search; renders nothing without a usable number. */
-export default function WhatsAppRequest({ number }: { number: string | null }) {
+/**
+ * "Write on WhatsApp": the gold button next to the hero search, or the round
+ * icon in the top bar. Renders nothing without a usable number.
+ */
+export default function WhatsAppRequest({ number, variant = 'hero' }: { number: string | null; variant?: 'hero' | 'icon' }) {
   const t = getDictionary(useLocale()).whatsappForm;
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -153,12 +156,26 @@ export default function WhatsAppRequest({ number }: { number: string | null }) {
 
   return (
     <>
-      <button ref={trigger} type="button" className="btn hero-whatsapp" aria-haspopup="dialog" onClick={() => setOpen(true)}>
-        <IconWhatsApp size={18} />
-        {t.openButton}
-      </button>
-      {/* Rendered into <body>: inside the hero it would inherit the white text and
-          sit below the sticky header. Mounted only while open, so the form starts
+      {variant === 'icon' ? (
+        <button
+          ref={trigger}
+          type="button"
+          className="topbar-whatsapp"
+          aria-label={t.openButton}
+          title={t.openButton}
+          aria-haspopup="dialog"
+          onClick={() => setOpen(true)}
+        >
+          <IconWhatsApp />
+        </button>
+      ) : (
+        <button ref={trigger} type="button" className="btn hero-whatsapp" aria-haspopup="dialog" onClick={() => setOpen(true)}>
+          <IconWhatsApp size={18} />
+          {t.openButton}
+        </button>
+      )}
+      {/* Rendered into <body>: inside the hero or the top bar it would inherit the
+          white text and sit below the sticky header. Mounted only while open, so the form starts
           empty every time and nothing is rendered on the server. */}
       {open &&
         createPortal(

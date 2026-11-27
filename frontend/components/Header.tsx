@@ -7,16 +7,17 @@ import { useCart } from './CartProvider';
 import { useCustomerAuth } from './CustomerAuthProvider';
 import AuthModal from './AuthModal';
 import ThemeToggle from './ThemeToggle';
+import WhatsAppRequest from './WhatsAppRequest';
 import { ContactsContent } from '@/lib/data';
 import { useLocale } from '@/lib/i18n/useLocale';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { locales, localeHref } from '@/lib/i18n/config';
+import { whatsappNumber } from '@/lib/whatsapp';
 import {
   IconSearch,
   IconPhone,
   IconMapPin,
   IconTelegram,
-  IconWhatsApp,
   IconInstagram,
   IconUser,
   IconHeart,
@@ -68,7 +69,7 @@ export default function Header({ contacts }: { contacts: ContactsContent }) {
           <div className="topbar-right">
             <div className="social-row" aria-label={dict.header.socialAria}>
               <a href="#" aria-label="Telegram"><IconTelegram /></a>
-              <a href="#" aria-label="WhatsApp"><IconWhatsApp /></a>
+              <WhatsAppRequest number={whatsappNumber(contacts.phone)} variant="icon" />
               <a href="#" aria-label="Instagram"><IconInstagram /></a>
             </div>
             <div className="lang-switch">

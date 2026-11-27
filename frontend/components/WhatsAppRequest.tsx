@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { useLocale } from '@/lib/i18n/useLocale';
 import { getDictionary, type Dictionary } from '@/lib/i18n/dictionaries';
 import { isValidPhone } from '@/lib/phone';
-import { whatsappUrl } from '@/lib/whatsapp';
+import { isMobileDevice, whatsappUrl, whatsappWebUrl } from '@/lib/whatsapp';
 import { IconClose, IconWhatsApp } from './Icons';
 
 type Field = 'name' | 'phone' | 'event';
@@ -23,6 +23,7 @@ function validate(values: Values, t: Dictionary['whatsappForm']): Partial<Record
 
 /**
  * Opens the given URL in a new tab, or in this one if pop-ups are blocked.
+ * "_blank" is always a new tab, so an open WhatsApp Web tab is never reused.
  * Not a link: Google Tag Manager records link clicks with their URL, and this
  * one carries the form's data. Nothing is pushed to dataLayer either.
  */
@@ -36,6 +37,8 @@ function RequestForm({ number, onClose, t }: { number: string; onClose: () => vo
   // Kept only in this component: the values go into the WhatsApp message and nowhere else.
   const [values, setValues] = useState<Values>({ name: '', phone: '', event: '' });
   const [submitted, setSubmitted] = useState(false);
+  // Desktop, after WhatsApp Web has opened: the wa.me link for the app.
+  const [appUrl, setAppUrl] = useState<string | null>(null);
   const inputs = useRef<Partial<Record<Field, HTMLInputElement | null>>>({});
   const errors = submitted ? validate(values, t) : {};
 
@@ -53,8 +56,13 @@ function RequestForm({ number, onClose, t }: { number: string; onClose: () => vo
       return;
     }
     const text = t.message({ name: values.name.trim(), phone: values.phone.trim(), event: values.event.trim() });
-    openChat(whatsappUrl(number, text));
-    onClose();
+    if (isMobileDevice()) {
+      openChat(whatsappUrl(number, text));
+      onClose();
+      return;
+    }
+    openChat(whatsappWebUrl(number, text));
+    setAppUrl(whatsappUrl(number, text));
   };
 
   const field = (name: Field, label: string, props: { type: string; autoComplete: string; placeholder: string; maxLength: number }) => (
@@ -88,17 +96,32 @@ function RequestForm({ number, onClose, t }: { number: string; onClose: () => vo
           <IconClose />
         </button>
       </div>
-      <p className="modal-sub">{t.subtitle}</p>
-      <form onSubmit={handleSubmit} noValidate>
-        {field('name', t.nameLabel, { type: 'text', autoComplete: 'name', placeholder: t.namePlaceholder, maxLength: 80 })}
-        {field('phone', t.phoneLabel, { type: 'tel', autoComplete: 'tel', placeholder: '+7 (___) ___-__-__', maxLength: 25 })}
-        {field('event', t.eventLabel, { type: 'text', autoComplete: 'off', placeholder: t.eventPlaceholder, maxLength: 120 })}
-        <p className="wa-note">{t.privacyNote}</p>
-        <button type="submit" className="btn btn-primary btn-block">
-          <IconWhatsApp size={17} />
-          {t.submit}
-        </button>
-      </form>
+      {appUrl ? (
+        <div className="wa-opened">
+          <p className="modal-sub" role="status">
+            {t.webOpened}
+          </p>
+          <button type="button" className="btn btn-outline btn-block" onClick={() => openChat(appUrl)}>
+            <IconWhatsApp size={17} />
+            {t.openInApp}
+          </button>
+          <button type="button" className="btn btn-primary btn-block" onClick={onClose}>
+            {t.done}
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} noValidate>
+          <p className="modal-sub">{t.subtitle}</p>
+          {field('name', t.nameLabel, { type: 'text', autoComplete: 'name', placeholder: t.namePlaceholder, maxLength: 80 })}
+          {field('phone', t.phoneLabel, { type: 'tel', autoComplete: 'tel', placeholder: '+7 (___) ___-__-__', maxLength: 25 })}
+          {field('event', t.eventLabel, { type: 'text', autoComplete: 'off', placeholder: t.eventPlaceholder, maxLength: 120 })}
+          <p className="wa-note">{t.privacyNote}</p>
+          <button type="submit" className="btn btn-primary btn-block">
+            <IconWhatsApp size={17} />
+            {t.submit}
+          </button>
+        </form>
+      )}
     </div>
   );
 }

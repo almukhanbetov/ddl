@@ -339,6 +339,7 @@ svg{ display: block; flex-shrink: 0; }
 .field-error{ color: var(--danger); font-size:13px; margin-top:7px; }
 .field input[aria-invalid="true"]{ border-color: var(--danger); }
 .wa-note{ color: var(--ink-soft); font-size:12.5px; margin: 4px 0 16px; }
+.wa-opened{ display:grid; gap:10px; }
 .hero-stats{ display:flex; gap: clamp(24px,4vw,56px); margin-top: 46px; flex-wrap:wrap; }
 .hero-stats div b{ display:block; font-family: var(--font-display); font-size: 28px; color:#fff; }
 .hero-stats div span{ font-size: 13px; color: rgba(255,255,255,.65); }

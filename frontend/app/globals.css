@@ -184,6 +184,15 @@ svg{ display: block; flex-shrink: 0; }
   transition: background .15s, transform .15s;
 }
 .social-row a:hover{ background: var(--accent); transform: translateY(-1px); }
+/* Same size as the icons beside it; the colours of the hero's gold WhatsApp button. */
+.topbar-whatsapp{
+  width:26px; height:26px; border-radius:50%; border:none; padding:0; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background: var(--gold-on-dark); color: var(--band);
+  transition: background .15s, transform .15s;
+}
+.topbar-whatsapp:hover{ background: color-mix(in srgb, var(--gold-on-dark) 78%, #fff); transform: translateY(-1px); }
+.topbar-whatsapp:focus-visible{ outline: 2px solid #fff; outline-offset: 2px; }
 .lang-switch{ display:flex; align-items:center; gap:4px; background: rgba(255,255,255,.08); border-radius: var(--radius-full); padding:3px; }
 .lang-switch button, .lang-switch a{
   border:none; background:transparent; color:#F3F1E8; padding:4px 11px;
@@ -728,6 +737,20 @@ svg{ display: block; flex-shrink: 0; }
   .product-grid{ grid-template-columns: repeat(2,1fr); gap:14px; }
   .hero-stats{ gap:28px; }
   .hero-actions{ flex-direction:column; align-items:stretch; }
+  /* Logo, favourites, cart and menu in one row: the tagline wraps instead of
+     pushing the menu button off the screen. */
+  .site-header .container{ gap:12px; justify-content:space-between; }
+  .logo{ flex-shrink:1; min-width:0; }
+  .header-actions{ gap:8px; }
+  .icon-btn, .burger button{ width:40px; height:40px; }
+  .topbar-right{ gap:12px; }
+  .social-row{ gap:8px; }
+}
+@media (max-width: 380px){
+  .logo-text small{ display:none; }
+  .lang-switch button, .lang-switch a{ padding:4px 8px; }
+  .topbar-right{ gap:10px; }
+  .social-row{ gap:6px; }
   .footer-top{ grid-template-columns: 1fr; padding-block:44px; }
   .gallery-thumbs{ grid-template-columns: repeat(4,1fr); }
 }

@@ -386,6 +386,9 @@ const kk: typeof ru = {
     privacyNote: 'Деректер тек WhatsApp хабарламасына енеді, сайт оларды сақтамайды.',
     submit: 'WhatsApp-ты ашу',
     closeAria: 'Жабу',
+    webOpened: 'WhatsApp Web жаңа қойындыда дайын хабарламамен ашылды — оны тексеріп, жіберіңіз. WhatsApp Web кіруді сұраса, QR-кодты телефонмен сканерлеңіз.',
+    openInApp: 'Қолданбада ашу',
+    done: 'Дайын',
     message: ({ name, phone, event }: { name: string; phone: string; event: string }) =>
       `Сәлеметсіз бе! Іс-шараға арналған жиһаз бен декорды жалдау құнын білгім келеді. Маған кері қоңырау шалыңызшы.\n\nАты: ${name}\nКері қоңырауға арналған нөмір: ${phone}\nІс-шара: ${event}`,
   },

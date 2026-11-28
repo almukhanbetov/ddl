@@ -24,6 +24,21 @@ import {
 } from '@/components/Icons';
 import styles from './cart.module.css';
 
+/**
+ * Tells Google Tag Manager that an order was placed (the Google Ads conversion
+ * tag listens for this event). Only the event name is sent: no customer data,
+ * order id or order link. Analytics must never turn a placed order into an error.
+ */
+function trackOrderSuccess() {
+  try {
+    const w = window as Window & { dataLayer?: unknown[] };
+    w.dataLayer = w.dataLayer || [];
+    w.dataLayer.push({ event: 'order_success' });
+  } catch {
+    // Ignored on purpose: the order is already created.
+  }
+}
+
 function todayISO(offsetDays = 0) {
   const d = new Date();
   d.setDate(d.getDate() + offsetDays);
@@ -108,6 +123,8 @@ export default function CartPage() {
       });
       setConfirmedOrder(order);
       clearCart();
+      // Sent from the handler, not an effect, so re-renders and reloads never repeat it.
+      trackOrderSuccess();
     } catch (err) {
       setSubmitError(err instanceof ApiError ? err.message : t.submitErrorGeneric);
     } finally {
